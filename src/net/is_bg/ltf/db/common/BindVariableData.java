@@ -20,15 +20,19 @@ import net.is_bg.ltf.db.common.interfaces.visit.IVisit.DB_TYPE;
 
 
 
-public class BindVariableData {
+public class BindVariableData implements IBindVariableData {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5982393268207677372L;
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
 	private static final SimpleDateFormat TIMESTAMP_FORMAT  = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
 	private DB_TYPE  dbType = DB_TYPE.PGR;
 	
 
-	public BindVariableData(Map<Integer, BindVariableInfo> v){
+	public BindVariableData(Map<Integer, IBindVariableInfo> v){
 		if(v != null){
 			values = v;
 		}
@@ -40,7 +44,7 @@ public class BindVariableData {
 	
 	
 	
-	private Map<Integer,BindVariableInfo> values=new HashMap<Integer,BindVariableInfo>();
+	private Map<Integer,IBindVariableInfo> values=new HashMap<Integer,IBindVariableInfo>();
 
 	
 	public void setInt(Integer val,int pos){
@@ -174,7 +178,7 @@ public class BindVariableData {
 	}
 	
 	public PreparedStatement setParameters(PreparedStatement prStmt) throws SQLException{
-		for(BindVariableInfo var:values.values()){
+		for(IBindVariableInfo var:values.values()){
 			if(var.getValue()!=null){
 			    prStmt.setObject(var.getPosition(), var.getValue(), var.getType());
 			}else{
@@ -185,7 +189,7 @@ public class BindVariableData {
 	}
 	
 	public CallableStatement setParameters(CallableStatement callStmt) throws SQLException{
-		for(BindVariableInfo var:values.values()){
+		for(IBindVariableInfo var:values.values()){
 			if(var.getValue()!=null){
 				if(var.IsOutputParam() == true) callStmt.registerOutParameter(var.getPosition(), var.getType());
 				else callStmt.setObject(var.getPosition(), var.getValue());
@@ -256,7 +260,7 @@ public class BindVariableData {
 			for(int i=0,j=1;i<chars.length;i++){
 				//TODO Handle question marks that are escaped
 				if('?'==chars[i]){
-					BindVariableInfo pstmp=values.get(j);
+					IBindVariableInfo pstmp=values.get(j);
 					j++;
 					if(pstmp!=null){
 						sb.append(strForLog(pstmp));
@@ -272,11 +276,11 @@ public class BindVariableData {
 	
 	
 
-	public Map<Integer, BindVariableInfo> getValues() {
+	public Map<Integer, IBindVariableInfo> getValues() {
 		return values;
 	}
 
-	private String strForLog(BindVariableInfo aPstmp) {
+	private String strForLog(IBindVariableInfo aPstmp) {
 		if(aPstmp.getValue()!=null){
 			switch(aPstmp.getType()){
 			//TODO 

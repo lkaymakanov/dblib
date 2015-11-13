@@ -1,6 +1,10 @@
 package net.is_bg.ltf.db.common;
 
-public class BindVariableInfo {
+public class BindVariableInfo implements IBindVariableInfo {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3239673191392175124L;
 	private Object 	value;
 	private int		type;
 	private int 	position;
