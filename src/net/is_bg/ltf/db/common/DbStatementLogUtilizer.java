@@ -3,14 +3,27 @@ package net.is_bg.ltf.db.common;
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DbStatementLogUtilizer.
+ */
 public class DbStatementLogUtilizer {
 	
+	/** The Constant MSG_TRANSACTION_ROLLBACK_FORMAT_STRING. */
 	private static final String MSG_TRANSACTION_ROLLBACK_FORMAT_STRING = 	"Transaction rollbacked executing %s.\n" +
 			"SQL:\t";
+	
+	/** The Constant MSG_DB_SATATEMENT_CLASS_NAME. */
 	private static final String MSG_DB_SATATEMENT_CLASS_NAME = 	"Class name  %s.";
 	
 	
 	//logs classes in transaction to console
+	/**
+	 * Prints the db statement classes in transaction.
+	 *
+	 * @param LOG the log
+	 * @param statements the statements
+	 */
 	public static void printDBStatementClassesInTransaction(ILog LOG, DBStatement[] statements){
 		if(statements == null) return;
 		
@@ -24,7 +37,9 @@ public class DbStatementLogUtilizer {
 	}
 	
 	/**
-	 * Print exception stack & Exception Message to console
+	 * Print exception stack & Exception Message to console.
+	 *
+	 * @param LOG the log
 	 * @param ex - Exception to be printed
 	 */
 	public static void printExceptionToConsole(ILog LOG, Exception ex){
@@ -38,9 +53,10 @@ public class DbStatementLogUtilizer {
 	
 	
 	/**
-	 * Logs Slq statement when an error ocurrs
-	 * @param LOG
-	 * @param statements
+	 * Logs Slq statement when an error ocurrs.
+	 *
+	 * @param LOG the log
+	 * @param statements the statements
 	 */
 	public static void printErrSqlStatement(ILog LOG, DBStatement[] statements){
 		DBStatementDetails details;
@@ -56,9 +72,10 @@ public class DbStatementLogUtilizer {
 	}
 	
 	/**
-	 * Log the SQL statement
-	 * @param LOG
-	 * @param statements
+	 * Log the SQL statement.
+	 *
+	 * @param LOG the log
+	 * @param statements the statements
 	 */
 	public static void printSqlStatement(ILog LOG, DBStatement[] statements){
 		DBStatementDetails details;
@@ -71,12 +88,24 @@ public class DbStatementLogUtilizer {
 	}
 	
 
+	/**
+	 * Prints the err sql statement.
+	 *
+	 * @param LOG the log
+	 * @param statement the statement
+	 */
 	public static void printErrSqlStatement(ILog LOG, DBStatement statement){
 		DBStatement dbst  [] = new DBStatement[1];
 		dbst[0] = statement;
 		printErrSqlStatement(LOG, dbst);
 	}
 	
+	/**
+	 * Prints the sql statement.
+	 *
+	 * @param LOG the log
+	 * @param statement the statement
+	 */
 	public static void printSqlStatement(ILog LOG, DBStatement statement){
 		DBStatement dbst  [] = new DBStatement[1];
 		dbst[0] = statement;
@@ -84,17 +113,23 @@ public class DbStatementLogUtilizer {
 	}
 	
 	
+	/**
+	 * Prints the details.
+	 *
+	 * @param LOG the log
+	 * @param details the details
+	 */
 	private static void printDetails(ILog LOG, DBStatementDetails details){
 		if(details == null) return;
 		details.printDetails(LOG);
 	}
 	
 	/**
-	 * upperboundTime - max time in milliseconds
-	 * @param LOG
-	 * @param statement
-	 * @param time
-	 * @param upperboundTime
+	 * upperboundTime - max time in milliseconds.
+	 *
+	 * @param LOG the log
+	 * @param statement the statement
+	 * @param upperboundTime the upperbound time
 	 */
 	public static void printTimeConsumingDBStatement(ILog LOG, DBStatement statement,  long upperboundTime){
 		if(statement == null)  return;

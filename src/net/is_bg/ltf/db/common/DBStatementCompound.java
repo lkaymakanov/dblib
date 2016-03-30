@@ -2,19 +2,29 @@ package net.is_bg.ltf.db.common;
 
 import java.sql.Connection;
 
+// TODO: Auto-generated Javadoc
 /**
- * A class that handles several DBStatements as a single one!
- * @author lubo
+ * A class that handles several DBStatements as a single one!.
  *
+ * @author lubo
  */
 public class DBStatementCompound implements DBStatement{
 	
+	/** The statements. */
 	DBStatement [] statements;
 	
+	/**
+	 * Instantiates a new dB statement compound.
+	 *
+	 * @param statements the statements
+	 */
 	public DBStatementCompound(DBStatement [] statements){
 		this.statements = statements;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.DBStatement#execute(java.sql.Connection)
+	 */
 	public void execute(Connection connection) throws JDBCException {
 		// TODO Auto-generated method stub
 		if(statements != null){
@@ -24,6 +34,9 @@ public class DBStatementCompound implements DBStatement{
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.DBStatement#getDetails()
+	 */
 	public DBStatementDetails getDetails() {
 		// TODO Auto-generated method stub
 		DBStatementDetails [] d = new DBStatementDetails[statements.length];

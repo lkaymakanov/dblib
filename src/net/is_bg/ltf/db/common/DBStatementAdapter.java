@@ -1,31 +1,38 @@
 package net.is_bg.ltf.db.common;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
-import net.is_bg.ltf.db.common.interfaces.IResultSetMetaDataListener;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
 
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DBStatementAdapter.
+ */
 public abstract  class  DBStatementAdapter  implements DBStatement{
 
+	/** The bind var data. */
 	protected BindVariableData bindVarData = new BindVariableData();
-	DBStatementDetails details = new DBStatementDetails();
-	protected IResultSetMetaDataListener resultSetMetaDataListener;
 	
+	/** The details. */
+	DBStatementDetails details = new DBStatementDetails();
+	
+	/** The test. */
 	public static  boolean test = false;
-	/**
-	 * The name of procedure or the query string
-	 */
+	
+	/** The name of procedure or the query string. */
 	protected String sql = "";
+	
+	/** The collect usr details. */
 	private boolean collectUsrDetails = true;
 	
 	//ADD COMMON STUFF TO STORED PROCEDURE CLASSES & SQL STATEMENT CLASSES
 	
 	/**
-	 * Displays resulset metadata
-	 * @param metadata
+	 * Displays resulset metadata.
+	 *
+	 * @param metadata the metadata
 	 */
 	protected void displayMetaData(ResultSetMetaData metadata){
 		try
@@ -57,8 +64,8 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 	}
 	
 	/**
-	 * Gather user info
-	 * @throws SQLException 
+	 * Gather user info.
+	 *
 	 */
 	public void collectUserDetails()  {
 		if(collectUsrDetails){
@@ -80,35 +87,49 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 		details.setSlqForlog(sqlForLog());
 	}
 	
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.DBStatement#getDetails()
+	 */
 	public DBStatementDetails getDetails() {
 		// TODO Auto-generated method stub
 		return details;
 	}
 	
 	
+	/**
+	 * Sql for log.
+	 *
+	 * @return the string
+	 */
 	public String sqlForLog() {
 		return bindVarData.sqlForLog(sql);
 	}
 
+	/**
+	 * Checks if is test.
+	 *
+	 * @return true, if is test
+	 */
 	public static boolean isTest() {
 		return test;
 	}
 
+	/**
+	 * Sets the test.
+	 *
+	 * @param test the new test
+	 */
 	public static void setTest(boolean test) {
 		DBStatementAdapter.test = test;
 	}
 
+	/**
+	 * Sets the collect usr details.
+	 *
+	 * @param collectUsrDetails the new collect usr details
+	 */
 	public void setCollectUsrDetails(boolean collectUsrDetails) {
 		this.collectUsrDetails = collectUsrDetails;
-	}
-
-	public IResultSetMetaDataListener getResultSetMetaDataListener() {
-		return resultSetMetaDataListener;
-	}
-
-	public void setResultSetMetaDataListener(
-			IResultSetMetaDataListener resultSetMetaDataListener) {
-		this.resultSetMetaDataListener = resultSetMetaDataListener;
 	}	
 	
 	

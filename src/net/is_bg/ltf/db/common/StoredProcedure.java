@@ -7,11 +7,21 @@ import java.sql.SQLException;
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class StoredProcedure.
+ */
 public abstract class StoredProcedure extends DBStatementAdapter {
+	
+	/** The Constant LOG. */
 	private static final ILog LOG = DBConfig.getDbLogFactory().getLog(StoredProcedure.class);// LogFactory.getLog(StoredProcedure.class);
 	
+	/** The Constant SUCCESS. */
 	protected static final String SUCCESS = "OK";
 	
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.DBStatement#execute(java.sql.Connection)
+	 */
 	public void execute(Connection connection) {
 		CallableStatement callableStatement = null;
 		try {
@@ -43,10 +53,29 @@ public abstract class StoredProcedure extends DBStatementAdapter {
 		}
 	}
 
+	/**
+	 * Връща стринга с извикване на 'StoredProcedure'.
+	 *
+	 * @return the procedure name
+	 */
 	protected abstract String getProcedureName();
 
+	/**
+	 * *
+	 * Попълва параметрите за 'StoredProcedure'.
+	 *
+	 * @param callableStatement the new parameters
+	 * @throws SQLException the sQL exception
+	 */
 	protected abstract void setParameters(CallableStatement callableStatement) throws SQLException;
 
+	/**
+	 * *
+	 * Извличане на резултат след изпълнение на 'StoredProcedure'.
+	 *
+	 * @param callableStatement the callable statement
+	 * @throws SQLException the sQL exception
+	 */
 	protected void retrieveResult(CallableStatement callableStatement) throws SQLException {
 		// no implementation
 	}

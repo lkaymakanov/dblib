@@ -7,74 +7,124 @@ import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimer;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * Details such as user, transactionNo, time of execution
- * @author lubo
+ * Details such as user, transactionNo, time of execution.
  *
+ * @author lubo
  */
 public  class DBStatementDetails {
 	
+	/** The Constant formatter. */
 	private static final DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
-	/**The user stuff
-	*/
+	
+	/** The user stuff. */
 	private boolean loggable = true;
 	
+	/** The transaction isolation level. */
 	private int transactionIsolationLevel = DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL;
 	
-	/**begin, end time of execution and duration
-	 * 
-	 */
+	/** begin, end time of execution and duration. */
 	private IElaplsedTimer timer = DBConfig.getTimerFactory().getElapsedTimer();
 
+	/** The slq forlog. */
 	private String  slqForlog = "";
 	
-	/**The user stuff
-	*/
+	/** The user stuff. */
 	private String userName = "";
+	
+	/** The tns. */
 	private String tns = "";
+	
+	/** The transaction no. */
 	private long transactionNo = 0;
 	
 	
-	/**begin, end time of execution and duration
-	 * 
+	/**
+	 * begin, end time of execution and duration.
+	 *
+	 * @return the slq forlog
 	 */
 	public String getSlqForlog() {
 		return slqForlog;
 	}
+	
+	/**
+	 * Sets the slq forlog.
+	 *
+	 * @param slqForlog the new slq forlog
+	 */
 	public void setSlqForlog(String slqForlog) {
 		this.slqForlog = slqForlog;
 	}
 	
+	/**
+	 * Gets the start time.
+	 *
+	 * @return the start time
+	 */
 	public long getStartTime(){
 		return timer.getStartTime();
 	}
 	
 	
+	/**
+	 * Gets the end time.
+	 *
+	 * @return the end time
+	 */
 	public long getEndTime(){
 		return  timer.getEndTime();
 	}
 	
+	/**
+	 * Gets the duration.
+	 *
+	 * @return the duration
+	 */
 	public long getDuration(){
 		return timer.getDuration();
 	}
 	
+	/**
+	 * Start timer.
+	 */
 	public void startTimer(){
 		timer.start();
 	}
 	
+	/**
+	 * Stop timer.
+	 */
 	public void stopTimer(){
 		timer.stop();
 	}
 	
 	
+	/**
+	 * Gets the transaction isolation level.
+	 *
+	 * @return the transaction isolation level
+	 */
 	public int getTransactionIsolationLevel() {
 		return transactionIsolationLevel;
 	}
+	
+	/**
+	 * Sets the transaction isolation level.
+	 *
+	 * @param transactionIsolationLevel the new transaction isolation level
+	 */
 	public void setTransactionIsolationLevel(int transactionIsolationLevel) {
 		this.transactionIsolationLevel = transactionIsolationLevel;
 	}
 	
+	/**
+	 * The Enum ISOLATION_LEVEL.
+	 */
 	public enum ISOLATION_LEVEL{
+			
+			/** The transaction non. */
 			TRANSACTION_NON(0),
 
 		    /**
@@ -121,15 +171,33 @@ public  class DBStatementDetails {
 		    TRANSACTION_SERIALIZABLE(8);
 
 		
+		/** The val. */
 		int val;
+		
+		/**
+		 * Instantiates a new isolation level.
+		 *
+		 * @param val the val
+		 */
 		ISOLATION_LEVEL(int val){
 			this.val =val;
 		};
 		
+		/**
+		 * Gets the val.
+		 *
+		 * @return the val
+		 */
 		public long getval(){
 			return val;
 		}
 		
+		/**
+		 * Val to isolation level.
+		 *
+		 * @param val the val
+		 * @return the isolation level
+		 */
 		public static ISOLATION_LEVEL  valToIsolationLevel(int val){
 			ISOLATION_LEVEL [] st = ISOLATION_LEVEL.values();
 			for(int i = 0; i < st.length; i++){
@@ -142,31 +210,84 @@ public  class DBStatementDetails {
 	
 	
 
+	/**
+	 * Gets the user name.
+	 *
+	 * @return the user name
+	 */
 	public String getUserName() {
 		return userName;
 	}
+	
+	/**
+	 * Sets the user name.
+	 *
+	 * @param userName the new user name
+	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	
+	/**
+	 * Gets the tns.
+	 *
+	 * @return the tns
+	 */
 	public String getTns() {
 		return tns;
 	}
+	
+	/**
+	 * Sets the tns.
+	 *
+	 * @param tns the new tns
+	 */
 	public void setTns(String tns) {
 		this.tns = tns;
 	}
+	
+	/**
+	 * Gets the transaction no.
+	 *
+	 * @return the transaction no
+	 */
 	public long getTransactionNo() {
 		return transactionNo;
 	}
+	
+	/**
+	 * Sets the transaction no.
+	 *
+	 * @param transactionNo the new transaction no
+	 */
 	public void setTransactionNo(long transactionNo) {
 		this.transactionNo = transactionNo;
 	}
+	
+	/**
+	 * Checks if is loggable.
+	 *
+	 * @return true, if is loggable
+	 */
 	public boolean isLoggable() {
 		return loggable;
 	}
+	
+	/**
+	 * Sets the loggable.
+	 *
+	 * @param loggable the new loggable
+	 */
 	public void setLoggable(boolean loggable) {
 		this.loggable = loggable;
 	}
 
+	/**
+	 * Prints the details.
+	 *
+	 * @param LOG the log
+	 * @return the string
+	 */
 	public String  printDetails(ILog LOG){
 		if(!isLoggable()) return "";
 		

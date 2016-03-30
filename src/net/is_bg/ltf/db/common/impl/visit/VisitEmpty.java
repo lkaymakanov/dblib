@@ -2,28 +2,47 @@ package net.is_bg.ltf.db.common.impl.visit;
 
 import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class VisitEmpty.
+ */
 public class VisitEmpty implements IVisit {
 
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.interfaces.visit.IVisit#getDbType()
+	 */
 	public DB_TYPE getDbType() {
 		// TODO Auto-generated method stub
 		return DB_TYPE.PGR;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.interfaces.visit.IVisit#getTransactionNo()
+	 */
 	public long getTransactionNo() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.interfaces.visit.IVisit#getFullName()
+	 */
 	public String getFullName() {
 		// TODO Auto-generated method stub
 		return "No name";
 	}
 
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.interfaces.visit.IVisit#getTns()
+	 */
 	public String getTns() {
 		// TODO Auto-generated method stub
 		return "No Tns";
 	}
 
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.interfaces.visit.IVisit#setTransactionNo(long)
+	 */
 	public void setTransactionNo(long no) {
 		// TODO Auto-generated method stub
 		

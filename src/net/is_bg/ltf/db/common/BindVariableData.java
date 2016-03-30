@@ -20,107 +20,209 @@ import net.is_bg.ltf.db.common.interfaces.visit.IVisit.DB_TYPE;
 
 
 
-public class BindVariableData implements IBindVariableData {
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BindVariableData.
+ */
+public class BindVariableData {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 5982393268207677372L;
+	/** The Constant DATE_FORMAT. */
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy");
+	
+	/** The Constant TIMESTAMP_FORMAT. */
 	private static final SimpleDateFormat TIMESTAMP_FORMAT  = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+	
+	/** The Constant TIME_FORMAT. */
 	private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
+	
+	/** The db type. */
 	private DB_TYPE  dbType = DB_TYPE.PGR;
 	
 
-	public BindVariableData(Map<Integer, IBindVariableInfo> v){
+	/**
+	 * Instantiates a new bind variable data.
+	 *
+	 * @param v the v
+	 */
+	public BindVariableData(Map<Integer, BindVariableInfo> v){
 		if(v != null){
 			values = v;
 		}
 	}
 	
+	/**
+	 * Instantiates a new bind variable data.
+	 */
 	public BindVariableData(){
 		
 	}
 	
 	
 	
-	private Map<Integer,IBindVariableInfo> values=new HashMap<Integer,IBindVariableInfo>();
+	/** The values. */
+	private Map<Integer,BindVariableInfo> values=new HashMap<Integer,BindVariableInfo>();
 
 	
+	/**
+	 * Sets the int.
+	 *
+	 * @param val the val
+	 * @param pos the pos
+	 */
 	public void setInt(Integer val,int pos){
 		values.put(pos,new BindVariableInfo(val, Types.INTEGER, pos));
 	}
 	
+	/**
+	 * Sets the int.
+	 *
+	 * @param val the val
+	 * @return the int
+	 */
 	public int setInt(Integer val){
 		int position = values.size()+1;
 		values.put(position,new BindVariableInfo(val, Types.INTEGER, position));
 		return position;
 	}
 	
+	/**
+	 * Sets the string.
+	 *
+	 * @param str the str
+	 * @param pos the pos
+	 */
 	public void setString(String str,int pos){
 			values.put(pos,new BindVariableInfo(str, Types.VARCHAR, pos));
 	}
 	
+	/**
+	 * Sets the long.
+	 *
+	 * @param val the val
+	 * @param pos the pos
+	 */
 	public void setLong(Long val,int pos){
 		values.put(pos,new BindVariableInfo(val, Types.INTEGER, pos));
 	}
 	
+	/**
+	 * Sets the long.
+	 *
+	 * @param val the val
+	 * @return the int
+	 */
 	public int setLong(Long val){
 		int position = values.size()+1;
 		values.put(position,new BindVariableInfo(val, Types.BIGINT, position));
 		return position;
 	}
 	
+	/**
+	 * Sets the big decimal.
+	 *
+	 * @param val the val
+	 * @param pos the pos
+	 */
 	public void setBigDecimal(BigDecimal val,int pos){
 		values.put(pos,new BindVariableInfo(val, Types.DECIMAL, pos));
 	}
 	
+	/**
+	 * Sets the big decimal.
+	 *
+	 * @param val the val
+	 * @return the int
+	 */
 	public int setBigDecimal(BigDecimal val){
 		int position = values.size()+1;
 		values.put(position,new BindVariableInfo(val, Types.DECIMAL, position));
 		return position;
 	}
 	
+	/**
+	 * Sets the date.
+	 *
+	 * @param val the val
+	 * @param pos the pos
+	 */
 	public void setDate(Date val,int pos){
 		values.put(pos,new BindVariableInfo(val, Types.DATE, pos));
 	}
 	
+	/**
+	 * Sets the date.
+	 *
+	 * @param val the val
+	 * @return the int
+	 */
 	public int setDate(Date val){
 		int position = values.size()+1;
 		values.put(position,new BindVariableInfo(val, Types.DATE, position));
 		return position;
 	}
 	
+	/**
+	 * Sets the time.
+	 *
+	 * @param val the val
+	 * @param pos the pos
+	 */
 	public void setTime(Time val,int pos){
 		values.put(pos,new BindVariableInfo(val, Types.TIME, pos));
 	}
 	
+	/**
+	 * Sets the time.
+	 *
+	 * @param val the val
+	 * @return the int
+	 */
 	public int setTime(Time val){
 		int position = values.size()+1;
 		values.put(position,new BindVariableInfo(val, Types.TIME, position));
 		return position;
 	}
 	
+	/**
+	 * Sets the timestamp.
+	 *
+	 * @param val the val
+	 * @param pos the pos
+	 */
 	public void setTimestamp(Timestamp val,int pos){
 		values.put(pos,new BindVariableInfo(val, Types.TIMESTAMP, pos));
 	}
 	
+	/**
+	 * Sets the timestamp.
+	 *
+	 * @param val the val
+	 * @return the int
+	 */
 	public int setTimestamp(Timestamp val){
 		int position = values.size()+1;
 		values.put(position,new BindVariableInfo(val, Types.TIMESTAMP, position));
 		return position;
 	}
 	
+	/**
+	 * Sets the string.
+	 *
+	 * @param str the str
+	 * @return the int
+	 */
 	public int setString(String str){
 		int position = values.size()+1;
-		if (str != null && str.isEmpty()) values.put(position,new BindVariableInfo(null, Types.VARCHAR, position));
-		else values.put(position,new BindVariableInfo(str, Types.VARCHAR, position));
+		if (str != null && str.isEmpty())
+			values.put(position, new BindVariableInfo(null, Types.VARCHAR, position));
+		else
+			values.put(position, new BindVariableInfo(str, Types.VARCHAR, position));
 		return position;
 	}
 	
 	
 	/**
-	 * Specify type explicitly with <code> setNull(int type)  </code>
+	 * Specify type explicitly with <code> setNull(int type)  </code>.
 	 */
 	@Deprecated
 	public void setNull() {
@@ -130,12 +232,27 @@ public class BindVariableData implements IBindVariableData {
 	}
 	
 	
+	public void setBytes(byte [] bytes){
+		int position = values.size()+1;
+		values.put(position,  new BindVariableInfo(bytes, Types.VARBINARY, position));
+	}
+	
+	/**
+	 * Sets the null.
+	 *
+	 * @param type the new null
+	 */
 	public void setNull(int type) {
 		// TODO Auto-generated method stub
 		int position = values.size()+1;
 		values.put(position,  new BindVariableInfo(null, type, position));
 	}
 	
+	/**
+	 * Sets the float.
+	 *
+	 * @param f the new float
+	 */
 	public void setFloat(Float f){
 		int position = values.size()+1;
 		BigDecimal bd = null;
@@ -143,6 +260,11 @@ public class BindVariableData implements IBindVariableData {
 		values.put(position,new BindVariableInfo(bd, Types.DECIMAL, position));
 	}
 	
+	/**
+	 * Sets the double.
+	 *
+	 * @param d the new double
+	 */
 	public void setDouble(Double d){
 		int position = values.size()+1;
 		BigDecimal bd = null;
@@ -150,21 +272,42 @@ public class BindVariableData implements IBindVariableData {
 		values.put(position,new BindVariableInfo(bd, Types.DECIMAL, position));
 	}
 	
+	/**
+	 * Sets the boolean.
+	 *
+	 * @param b the new boolean
+	 */
 	public void setBoolean(boolean b){
 		int position = values.size()+1;
 		if(b == true) values.put(position,new BindVariableInfo(1, Types.NUMERIC, position));
 		else  values.put(position,new BindVariableInfo(0, Types.NUMERIC, position));
 	}
 	
+	/**
+	 * Sets the object.
+	 *
+	 * @param o the new object
+	 */
 	public void setObject(Object o){
 		int position = values.size()+1;
 		values.put(position,new BindVariableInfo(o, Types.OTHER, position));
 	}
 	
+	/**
+	 * Sets the object.
+	 *
+	 * @param o the o
+	 * @param pos the pos
+	 */
 	public void setObject(Object o,int pos){
 		values.put(pos,new BindVariableInfo(o, Types.OTHER, pos));
 	}
 	
+	/**
+	 * Register out parameter.
+	 *
+	 * @param type the type
+	 */
 	public void registerOutParameter(int type){
 		int position = values.size()+1;
 		BindVariableInfo infoObj = new BindVariableInfo(new Object(), type, position, true);
@@ -177,8 +320,15 @@ public class BindVariableData implements IBindVariableData {
 		values.put(position, infoObj);
 	}
 	
+	/**
+	 * Sets the parameters.
+	 *
+	 * @param prStmt the pr stmt
+	 * @return the prepared statement
+	 * @throws SQLException the sQL exception
+	 */
 	public PreparedStatement setParameters(PreparedStatement prStmt) throws SQLException{
-		for(IBindVariableInfo var:values.values()){
+		for(BindVariableInfo var:values.values()){
 			if(var.getValue()!=null){
 			    prStmt.setObject(var.getPosition(), var.getValue(), var.getType());
 			}else{
@@ -188,8 +338,15 @@ public class BindVariableData implements IBindVariableData {
 		return prStmt;
 	}
 	
+	/**
+	 * Sets the parameters.
+	 *
+	 * @param callStmt the call stmt
+	 * @return the callable statement
+	 * @throws SQLException the sQL exception
+	 */
 	public CallableStatement setParameters(CallableStatement callStmt) throws SQLException{
-		for(IBindVariableInfo var:values.values()){
+		for(BindVariableInfo var:values.values()){
 			if(var.getValue()!=null){
 				if(var.IsOutputParam() == true) callStmt.registerOutParameter(var.getPosition(), var.getType());
 				else callStmt.setObject(var.getPosition(), var.getValue());
@@ -200,6 +357,13 @@ public class BindVariableData implements IBindVariableData {
 		return callStmt;
 	}
 	
+	/**
+	 * Gets the clob as buffered reader.
+	 *
+	 * @param callStmt the call stmt
+	 * @param paramIndex the param index
+	 * @return the clob as buffered reader
+	 */
 	public BufferedReader getClobAsBufferedReader(CallableStatement callStmt, int paramIndex){
 		CharArrayReader rdr;
 		Clob arr = null;
@@ -225,6 +389,13 @@ public class BindVariableData implements IBindVariableData {
 		return null;
 	}
 	
+	/**
+	 * Gets the clob as buffered reader.
+	 *
+	 * @param rs the rs
+	 * @param paramIndex the param index
+	 * @return the clob as buffered reader
+	 */
 	public BufferedReader getClobAsBufferedReader(ResultSet rs, int paramIndex){
 		CharArrayReader rdr;
 		Clob arr = null;
@@ -253,6 +424,12 @@ public class BindVariableData implements IBindVariableData {
 	
 	//TODO Wrap other setXXX methods in PreparedStatement
 	
+	/**
+	 * Sql for log.
+	 *
+	 * @param sql the sql
+	 * @return the string
+	 */
 	public String sqlForLog(String sql){
 		if(sql!=null){
 			char[] chars=sql.toCharArray();
@@ -260,7 +437,7 @@ public class BindVariableData implements IBindVariableData {
 			for(int i=0,j=1;i<chars.length;i++){
 				//TODO Handle question marks that are escaped
 				if('?'==chars[i]){
-					IBindVariableInfo pstmp=values.get(j);
+					BindVariableInfo pstmp=values.get(j);
 					j++;
 					if(pstmp!=null){
 						sb.append(strForLog(pstmp));
@@ -276,11 +453,22 @@ public class BindVariableData implements IBindVariableData {
 	
 	
 
-	public Map<Integer, IBindVariableInfo> getValues() {
+	/**
+	 * Gets the values.
+	 *
+	 * @return the values
+	 */
+	public Map<Integer, BindVariableInfo> getValues() {
 		return values;
 	}
 
-	private String strForLog(IBindVariableInfo aPstmp) {
+	/**
+	 * Str for log.
+	 *
+	 * @param aPstmp the a pstmp
+	 * @return the string
+	 */
+	private String strForLog(BindVariableInfo aPstmp) {
 		if(aPstmp.getValue()!=null){
 			switch(aPstmp.getType()){
 			//TODO 

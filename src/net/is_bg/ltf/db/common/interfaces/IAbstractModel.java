@@ -1,16 +1,15 @@
 package net.is_bg.ltf.db.common.interfaces;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface IAbstractModel.
+ */
 public interface IAbstractModel {
-
+	
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public long getId() ;
-	public void setId(long id) ;
-	
-	/**
-	 * get the index of model*/
-	public  long getIndex();
-	
-
-	/**
-	 * set the index of model*/
-	public void setIndex(long index);
 }
