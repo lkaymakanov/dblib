@@ -57,6 +57,10 @@ public  abstract class AbstractMainDao implements Serializable{
 	    dbExecutor.execute(statement,  DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL);
 	}
 	
+	public final void execute(DBStatement[] statement, String dataSourceName) {
+	    dbExecutor.execute(statement, dataSourceName,  DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL);
+	}
+	
 	/**
 	 * Execute.
 	 *
@@ -66,6 +70,15 @@ public  abstract class AbstractMainDao implements Serializable{
 		dbExecutor.execute(dblist.toArray(new DBStatement[0]), DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL);
 	}
 
+	
+	/**
+	 * Execute.
+	 *
+	 * @param dblist the dblist
+	 */
+	public final void execute(List<DBStatement> dblist, String dataSourceName){
+		dbExecutor.execute(dblist.toArray(new DBStatement[0]), dataSourceName, DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL);
+	}
 	
 	//Specify isolation level methods
 	/**
