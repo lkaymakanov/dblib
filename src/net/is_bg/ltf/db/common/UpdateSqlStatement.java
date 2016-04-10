@@ -12,8 +12,14 @@ public abstract class UpdateSqlStatement extends SqlStatement {
 	/* (non-Javadoc)
 	 * @see net.is_bg.ltf.db.common.SqlStatement#executeStatement(java.sql.PreparedStatement)
 	 */
+	private int updateCnt = 0;
+	
 	@Override
 	protected final void executeStatement(PreparedStatement prStmt) throws SQLException {
-	    prStmt.executeUpdate();
+	   updateCnt =  prStmt.executeUpdate();
+	}
+
+	public int getUpdateCnt() {
+		return updateCnt;
 	}
 }
