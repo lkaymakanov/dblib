@@ -14,6 +14,7 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 	
 	private ResultSetData resultSetData = new ResultSetData();
 	
+	
 	public	CustomSelect(String sql){
 		this.sql = sql;
 		this.resultSetMetaDataListener = new IResultSetMetaDataListener() {
