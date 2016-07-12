@@ -1,5 +1,11 @@
 package net.is_bg.ltf.db.common.interfaces.visit;
 
+import java.io.Serializable;
+
+import net.is_bg.ltf.db.common.impl.visit.VisitAdditionals;
+
+
+
 
 
 
@@ -7,7 +13,7 @@ package net.is_bg.ltf.db.common.interfaces.visit;
 /**
  * The Interface IVisit.
  */
-public interface IVisit {
+public interface IVisit extends Serializable{
 
 	/**
 	 * The Enum DB_TYPE.
@@ -51,4 +57,11 @@ ORCL, /** The pgr. */
 	 */
 	public void setTransactionNo(long no);
 	
+	
+	public long getCommittedTransactionCnt();
+	public void setCommittedTransactionCnt(long committedTransactionCnt);
+	public long getRollBackedTransactionCnt();
+	public void setRollBackedTransactionCnt(long rollBackedTransactionCnt);
+	public long getVisitId();
+	public VisitAdditionals getVisitAdditionals();
 }

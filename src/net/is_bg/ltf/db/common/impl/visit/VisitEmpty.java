@@ -8,6 +8,12 @@ import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
  */
 public class VisitEmpty implements IVisit {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2370537698002585561L;
+	private VisitAdditionals visitAdditionals = new VisitAdditionals();
+
 	/* (non-Javadoc)
 	 * @see net.is_bg.ltf.db.common.interfaces.visit.IVisit#getDbType()
 	 */
@@ -47,5 +53,42 @@ public class VisitEmpty implements IVisit {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public long getCommittedTransactionCnt() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setCommittedTransactionCnt(long committedTransactionCnt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public long getRollBackedTransactionCnt() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setRollBackedTransactionCnt(long rollBackedTransactionCnt) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public long getVisitId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public VisitAdditionals getVisitAdditionals() {
+		// TODO Auto-generated method stub
+		return visitAdditionals;
+	}
+	
 
 }

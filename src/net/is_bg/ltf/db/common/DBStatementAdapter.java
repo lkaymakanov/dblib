@@ -1,7 +1,6 @@
 package net.is_bg.ltf.db.common;
 import java.sql.ResultSetMetaData;
 
-import net.is_bg.ltf.db.common.interfaces.IResultSetMetaDataListener;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
 
 
@@ -27,8 +26,6 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 	
 	/** The collect usr details. */
 	private boolean collectUsrDetails = true;
-
-	protected IResultSetMetaDataListener resultSetMetaDataListener;
 	
 	//ADD COMMON STUFF TO STORED PROCEDURE CLASSES & SQL STATEMENT CLASSES
 	
@@ -74,7 +71,6 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 		if(collectUsrDetails){
 			IVisit visit = DBConfig.getVisitFactory().getVist();
 			if(visit != null){
-				visit.setTransactionNo(visit.getTransactionNo() + 1);
 				
 				//set tranasction no
 				details.setTransactionNo(visit.getTransactionNo());
@@ -84,7 +80,9 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 				
 				//user name
 			    details.setUserName(visit.getFullName());
-				
+			    
+			    //set statement class
+			    details.setStatemetntClass(this.getClass());
 			}
 		}
 		details.setSlqForlog(sqlForLog());
@@ -136,7 +134,4 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 	}	
 	
 	
-	public void setResultSetMetaDataListener(
-			IResultSetMetaDataListener resultSetMetaDataListener) {
-		this.resultSetMetaDataListener = resultSetMetaDataListener;
-	}	}
+}

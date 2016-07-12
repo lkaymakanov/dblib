@@ -1,10 +1,10 @@
 package net.is_bg.ltf.db.common;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactoryX;
+import net.is_bg.ltf.db.common.interfaces.IDBTransaction;
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 
 
@@ -96,51 +96,35 @@ public class DBExecutor {
 	 */
 	public void execute(DBStatement[] statements, String dbResourceName, int isolationLevel) {
 		Connection connection = dbResourceName == null  ?  factory.getConnection() :  (factory instanceof IConnectionFactoryX ? ((IConnectionFactoryX)factory).getConnection(dbResourceName) : factory.getConnection()) ;
-		
-		//log classes in transaction to console
-		DbStatementLogUtilizer.printDBStatementClassesInTransaction(LOG, statements);
-		try {
-			connection.setTransactionIsolation(isolationLevel);
-			connection.setAutoCommit(false);
-		} catch (SQLException e2) {
-			try {
-				if (!connection.isClosed())
-					connection.close();
-			} catch (SQLException e) {
-				DbStatementLogUtilizer.printExceptionToConsole(LOG, e);
-			}
-			DbStatementLogUtilizer.printExceptionToConsole(LOG,e2);
-			throw new JDBCException(e2);
+		this.executeTransaction(new DBTransaction.DBTransactionBuilder(statements, connection, LOG).build(), dbResourceName, isolationLevel);
+	}
+	
+	
+	/**
+	 * Handle db statements as one DBTransaction !!!
+	 * @param transAction
+	 * @param dbResourceName
+	 * @param isolationLevel
+	 */
+	private void executeTransaction(IDBTransaction transAction, String dbResourceName, int isolationLevel){
+		//execute transaction
+		IDBTransaction trans = transAction;
+		try{
+			trans.setTransactionIsolation(isolationLevel);
+			trans.setAutoCommit(false);
+			trans.execute();   
+			trans.commit();
 		}
-		int i=0;
-		try {
-			for (; i < statements.length; i++) {
-				statements[i].getDetails().setTransactionIsolationLevel(connection.getTransactionIsolation());
-				statements[i].execute(connection);
-				DbStatementLogUtilizer.printSqlStatement(LOG, statements[i]);  //print to console
-			}
-			connection.commit();
-		} catch (Exception e) {
-			try {
-				DbStatementLogUtilizer.printErrSqlStatement(LOG, statements[i]);
-				connection.rollback();
-			} catch (SQLException e1) {
-				//Log Exception on the verge of throw
-				DbStatementLogUtilizer.printErrSqlStatement(LOG, statements[i]);
-				throw new JDBCException(e1);
-			}
-			//Log Exception on the verge of throw
-			DbStatementLogUtilizer.printErrSqlStatement(LOG, statements[i]);
+		catch (Exception e) {
+			// TODO: handle exception
+			trans.rollBack();
 			throw new JDBCException(e);
-		} finally {			
-			try {
-				if (!connection.isClosed()){
-					connection.close();
-				}
-			} catch (SQLException e) {
-				//Log Exception on the verge of throw
-				DbStatementLogUtilizer.printErrSqlStatement(LOG, statements[i]);
-			}
+		}
+		finally{
+			trans.cleanUp();
 		}
 	}
+	
+	
+	
 }

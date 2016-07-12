@@ -3,7 +3,6 @@ package net.is_bg.ltf.db.common;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,9 +43,6 @@ public abstract class SqlStatement extends DBStatementAdapter {
 			sql = getSqlString();
 			prStmt = connection.prepareStatement(sql, resultSetType, resultSetConcurrency);//,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
 			setParameters(prStmt);
-			
-			ResultSetMetaData metadata = prStmt.getMetaData();
-			if(resultSetMetaDataListener != null) resultSetMetaDataListener.processMetaData(metadata);
 			
 			//get the start time of execution
 			details.startTimer();

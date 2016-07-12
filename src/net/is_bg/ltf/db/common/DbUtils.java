@@ -92,4 +92,12 @@ public class DbUtils {
 	public static BigDecimal RoundBigDecimal2(BigDecimal bd) {
 		return bd.setScale(2,BigDecimal.ROUND_CEILING);
 	}
+	
+	public static long getCommittedTransactionsCnt(){
+		return DBTransaction.commitedTransactions.get();
+	}
+	
+	public static long getRollBackedTransactionsCnt(){
+		return DBTransaction.rollbackedTranasactions.get();
+	}
 }

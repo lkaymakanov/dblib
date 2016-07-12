@@ -40,6 +40,8 @@ public  class DBStatementDetails {
 	private long transactionNo = 0;
 	
 	
+	private Class statemetntClass;
+	
 	/**
 	 * begin, end time of execution and duration.
 	 *
@@ -305,6 +307,14 @@ public  class DBStatementDetails {
 		String st = forLog.toString();
 		LOG.debug(st);
 		return st;
+	}
+
+	public Class getStatemetntClass() {
+		return statemetntClass;
+	}
+
+	public void setStatemetntClass(Class statemetntClass) {
+		this.statemetntClass = statemetntClass;
 	}
 	
 }

@@ -2,6 +2,7 @@ package net.is_bg.ltf.db.common;
 
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactoryX;
+import net.is_bg.ltf.db.common.interfaces.ITransactionListener;
 import net.is_bg.ltf.db.common.interfaces.logging.ILogFactory;
 import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimerFactory;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisitFactory;
@@ -28,6 +29,11 @@ public class DBConfig {
 	/** The timer factory. */
 	private static  IElaplsedTimerFactory timerFactory;
 	
+	/***
+	 * A transaction listener!!!
+	 */
+	private static  ITransactionListener transactionListener;
+	
 	/**
 	 * Initialize log factory, visit factory, connection factory & ElapsedTimerFactory. Call this method first before calling any other method in AppInitListener.
 	 *
@@ -36,11 +42,13 @@ public class DBConfig {
 	 * @param cFactory the c factory
 	 * @param elapsedTimerFactory the elapsed timer factory
 	 */
-	public static void initDBConfig(ILogFactory logFactory, IVisitFactory visitFactory, IConnectionFactoryX cFactory, IElaplsedTimerFactory elapsedTimerFactory){
+	public static void initDBConfig(ILogFactory logFactory, IVisitFactory visitFactory, IConnectionFactoryX cFactory, IElaplsedTimerFactory elapsedTimerFactory,
+			ITransactionListener transactionListener){
 		DBConfig.logFactory = logFactory ;
 		DBConfig.visitFactory = visitFactory;
 		DBConfig.cFactory = cFactory;
 		DBConfig.timerFactory = elapsedTimerFactory;
+		DBConfig.transactionListener =transactionListener;
 	}
 
 	/**
@@ -80,5 +88,10 @@ public class DBConfig {
 	public static IElaplsedTimerFactory getTimerFactory() {
 		return timerFactory;
 	}
+
+	public static ITransactionListener getTransactionListener() {
+		return transactionListener;
+	}
+	
 	
 }
