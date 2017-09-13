@@ -15,19 +15,16 @@ public class ResultSetData implements IResultSetData{
 	
 	@Override
 	public List<ColumnMetaData> getColumMetaData() {
-		// TODO Auto-generated method stub
 		return columndata;
 	}
 
 	@Override
 	public List<Object[]> getResult() {
-		// TODO Auto-generated method stub
 		return res;
 	}
 
 	@Override
 	public Exception getException() {
-		// TODO Auto-generated method stub
 		return exception;
 	}
 

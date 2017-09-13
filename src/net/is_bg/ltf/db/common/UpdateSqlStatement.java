@@ -8,7 +8,6 @@ import java.sql.SQLException;
  * The Class UpdateSqlStatement.
  */
 public abstract class UpdateSqlStatement extends SqlStatement {
-
 	private int updateCnt = 0;
 	
 	@Override

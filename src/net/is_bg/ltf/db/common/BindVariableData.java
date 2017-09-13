@@ -39,12 +39,13 @@ public class BindVariableData {
 	private DB_TYPE  dbType = DB_TYPE.PGR;
 	
 
+	
 	/**
 	 * Instantiates a new bind variable data.
 	 *
 	 * @param v the v
 	 */
-	public BindVariableData(Map<Integer, BindVariableInfo> v){
+	BindVariableData(Map<Integer, BindVariableInfo> v){
 		if(v != null){
 			values = v;
 		}
@@ -57,7 +58,9 @@ public class BindVariableData {
 		
 	}
 	
-	
+	public static BindVariableData getInstance(){
+		return new BindVariableData();
+	}
 	
 	/** The values. */
 	private Map<Integer,BindVariableInfo> values=new HashMap<Integer,BindVariableInfo>();
@@ -245,7 +248,22 @@ public class BindVariableData {
 	public void setNull(int type) {
 		// TODO Auto-generated method stub
 		int position = values.size()+1;
+		setNull(position, type);
+	}
+	
+	public void setNull(int position, int type) {
+		// TODO Auto-generated method stub
 		values.put(position,  new BindVariableInfo(null, type, position));
+	}
+	
+	public void setShort(short x){
+		int position = values.size()+1;
+		setShort(x, position);
+	}
+	
+	public void setShort(short x, int parameterIndex) {
+		// TODO Auto-generated method stub
+		values.put(parameterIndex,  new BindVariableInfo(null, Types.INTEGER, parameterIndex));
 	}
 	
 	/**
@@ -253,12 +271,18 @@ public class BindVariableData {
 	 *
 	 * @param f the new float
 	 */
-	public void setFloat(Float f){
-		int position = values.size()+1;
+	public void setFloat(Float f, int position){
+		//int position = values.size()+1;
 		BigDecimal bd = null;
 		if(f != null) bd = BigDecimal.valueOf(f);
 		values.put(position,new BindVariableInfo(bd, Types.DECIMAL, position));
 	}
+	
+	public void setFloat(Float f){
+		int position = values.size()+1;
+		setFloat(f, position);
+	}
+	
 	
 	/**
 	 * Sets the double.
@@ -267,6 +291,12 @@ public class BindVariableData {
 	 */
 	public void setDouble(Double d){
 		int position = values.size()+1;
+		setDouble(d, position);
+	}
+	
+
+	public void setDouble(Double d, int position) {
+		// TODO Auto-generated method stub
 		BigDecimal bd = null;
 		if(d != null) bd = BigDecimal.valueOf(d);
 		values.put(position,new BindVariableInfo(bd, Types.DECIMAL, position));
@@ -279,9 +309,26 @@ public class BindVariableData {
 	 */
 	public void setBoolean(boolean b){
 		int position = values.size()+1;
+		setBoolean(b, position);
+	}
+	
+	
+	public void setBooleanB(boolean b){
+		int position = values.size()+1;
+		setBooleanB(b, position);
+	}
+	
+	
+	public void setBoolean(boolean b, int position){
 		if(b == true) values.put(position,new BindVariableInfo(1, Types.NUMERIC, position));
 		else  values.put(position,new BindVariableInfo(0, Types.NUMERIC, position));
 	}
+	
+	public void setBooleanB(boolean b, int position){
+		 values.put(position,new BindVariableInfo(b, Types.BOOLEAN, position));
+		//else  values.put(position,new BindVariableInfo(0, Types.NUMERIC, position));
+	}
+	
 	
 	/**
 	 * Sets the object.
@@ -308,8 +355,7 @@ public class BindVariableData {
 	 *
 	 * @param type the type
 	 */
-	public void registerOutParameter(int type){
-		int position = values.size()+1;
+	public void registerOutParameter(int type, int position){
 		BindVariableInfo infoObj = new BindVariableInfo(new Object(), type, position, true);
 		
 		if(type == Types.CLOB){
@@ -318,6 +364,10 @@ public class BindVariableData {
 		}
 		
 		values.put(position, infoObj);
+	}
+	
+	public void registerOutParameter(int type){
+		registerOutParameter(type, values.size()+1);
 	}
 	
 	/**
@@ -338,6 +388,8 @@ public class BindVariableData {
 		return prStmt;
 	}
 	
+	
+
 	/**
 	 * Sets the parameters.
 	 *
@@ -499,5 +551,8 @@ public class BindVariableData {
 		}
 		return "null";
 	}
+
+
+
 
 }

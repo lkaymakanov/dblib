@@ -19,8 +19,7 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 		this.sql = sql;
 		this.resultSetMetaDataListener = new IResultSetMetaDataListener() {
 			@Override
-			public void processMetaData(ResultSetMetaData arg0) {
-				// TODO Auto-generated method stub
+			public Object processMetaData(ResultSetMetaData arg0) {
 				try {
 					int colcount = arg0.getColumnCount();
 					for(int i =1 ; i <=colcount; i++){
@@ -37,25 +36,23 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				return null;
 			}
 		};
 	}
 	
 	@Override
 	protected String rtnSqlString(String sql) {
-		// TODO Auto-generated method stub
 		return super.rtnSqlString(getSqlString());
 	}
 	
 	@Override
 	protected String getSqlString() {
-		// TODO Auto-generated method stub
 		return sql;// markedText== null ? sqlText.getText() : markedText;
 	}
 	
 	@Override
 	protected void retrieveResult(ResultSet rs) throws SQLException {
-		// TODO Auto-generated method stub
 		int i =0;
 		while (rs.next()) {
 			Object [] row = new Object[resultSetData.getColumMetaData().size()];

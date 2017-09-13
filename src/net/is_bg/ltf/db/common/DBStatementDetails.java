@@ -1,10 +1,9 @@
 package net.is_bg.ltf.db.common;
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
-import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimer;
 
 
 // TODO: Auto-generated Javadoc
@@ -13,8 +12,13 @@ import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimer;
  *
  * @author lubo
  */
-public  class DBStatementDetails {
+public  class DBStatementDetails implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2933268622449751406L;
+
 	/** The Constant formatter. */
 	private static final DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
 	
@@ -23,9 +27,6 @@ public  class DBStatementDetails {
 	
 	/** The transaction isolation level. */
 	private int transactionIsolationLevel = DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL;
-	
-	/** begin, end time of execution and duration. */
-	private IElaplsedTimer timer = DBConfig.getTimerFactory().getElapsedTimer();
 
 	/** The slq forlog. */
 	private String  slqForlog = "";
@@ -39,8 +40,10 @@ public  class DBStatementDetails {
 	/** The transaction no. */
 	private long transactionNo = 0;
 	
-	
 	private Class statemetntClass;
+	
+	/** begin, end time of execution and duration. */
+	long startTime,endTime, duration;
 	
 	/**
 	 * begin, end time of execution and duration.
@@ -66,7 +69,7 @@ public  class DBStatementDetails {
 	 * @return the start time
 	 */
 	public long getStartTime(){
-		return timer.getStartTime();
+		return startTime;
 	}
 	
 	
@@ -76,7 +79,7 @@ public  class DBStatementDetails {
 	 * @return the end time
 	 */
 	public long getEndTime(){
-		return  timer.getEndTime();
+		return endTime;
 	}
 	
 	/**
@@ -85,21 +88,7 @@ public  class DBStatementDetails {
 	 * @return the duration
 	 */
 	public long getDuration(){
-		return timer.getDuration();
-	}
-	
-	/**
-	 * Start timer.
-	 */
-	public void startTimer(){
-		timer.start();
-	}
-	
-	/**
-	 * Stop timer.
-	 */
-	public void stopTimer(){
-		timer.stop();
+		return duration;
 	}
 	
 	
@@ -295,7 +284,6 @@ public  class DBStatementDetails {
 		
 		StringBuilder forLog = new StringBuilder();
 		forLog.append("\nTransaction: " + transactionNo);
-		//forLog.append("\nTransaction isolation Level:" + ISOLATION_LEVEL.valToIsolationLevel(transactionIsolationLevel));
 		forLog.append("\nStart Time:  " + formatter.format(new Date(getStartTime())));
 		forLog.append("\nEnd Time:    " + formatter.format(new Date(getEndTime())));
 		forLog.append("\nDuration:    " + getDuration() + " ms");

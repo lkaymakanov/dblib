@@ -1,5 +1,7 @@
 package net.is_bg.ltf.db.common;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
@@ -72,7 +74,6 @@ public class DbUtils {
 	 * @return the string
 	 */
 	public static String RoundBigDecimal(BigDecimal bd) {
-		// За закръгляне на float до два символа след десетичната запетая
 		if (bd == null)
 			return "";
 		DecimalFormat df = new DecimalFormat("#.##");
@@ -100,4 +101,19 @@ public class DbUtils {
 	public static long getRollBackedTransactionsCnt(){
 		return DBTransaction.rollbackedTranasactions.get();
 	}
+
+	
+	public static String exceptionToString(Exception e){
+		if(e== null) return "";
+		return  ( e.toString() + e.getMessage()) == null ? "" : " " +  e.getCause() + getStackTrace(e);
+	}
+	
+	public static String   getStackTrace(Exception ex){
+		if(ex == null) return "";
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		ex.printStackTrace(pw);
+		return sw.toString(); 
+	}
+	
 }

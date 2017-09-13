@@ -21,7 +21,7 @@ public class NullSqlStatement extends SqlStatement{
 	@Override
 	public void execute(Connection connection) {
 		// TODO Auto-generated method stub
-		
+		collectUserDetails();
 	}
 	
 	/* (non-Javadoc)

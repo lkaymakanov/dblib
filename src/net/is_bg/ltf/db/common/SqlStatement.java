@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 
 
@@ -29,6 +30,7 @@ public abstract class SqlStatement extends DBStatementAdapter {
 	/** The result set concurrency. */
 	protected int resultSetConcurrency = ResultSet.CONCUR_READ_ONLY; 
 	
+	
 	/**Конструктор.*/
 	public SqlStatement() {
 		super();
@@ -43,15 +45,7 @@ public abstract class SqlStatement extends DBStatementAdapter {
 			sql = getSqlString();
 			prStmt = connection.prepareStatement(sql, resultSetType, resultSetConcurrency);//,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
 			setParameters(prStmt);
-			
-			//get the start time of execution
-			details.startTimer();
-			
 			executeStatement(prStmt);  //execute
-			
-			//get the end time of execution
-			details.stopTimer();
-
 		} catch (SQLException e) {
 			throw new JDBCException(e);
 		} finally {

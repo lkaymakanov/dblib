@@ -1,5 +1,7 @@
+
 package net.is_bg.ltf.db.common;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,8 +14,10 @@ import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimer;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
 
+
+
 /***
- * A class that represents an sql transaction!
+ * A class that represents  sql transaction!
  * @author lubo
  *
  */
@@ -22,22 +26,29 @@ public class DBTransaction implements IDBTransaction {
 	 * 
 	 */
 	private static final long serialVersionUID = 2110666118807504254L;
-	private DBStatement [] statements;
-	private Connection connection;
-	private ILog  LOG;
+	private transient DBStatement [] statements;
+	private transient Connection connection;
+	private transient ILog  LOG;
 	private int i = 0;
-	private ITransactionListener listener;
+	private transient ITransactionListener listener;
 	//a global transaction id!
 	private static AtomicLong transactionIdSequence = new AtomicLong(0);
 	private boolean rollBacked = false;
-	private IVisit visit;
-	private long transactionId;
-	private IElaplsedTimer timer = DBConfig.getTimerFactory().getElapsedTimer();
-	static AtomicLong commitedTransactions = new AtomicLong(0);
-	static AtomicLong rollbackedTranasactions = new AtomicLong(0);
+	private transient IVisit visit;
+	private long transactionId;   //the id of transaction
+	private transient IElaplsedTimer timer = DBConfig.getTimerFactory().getElapsedTimer();
+	private transient IElaplsedTimer timerDbStatement = DBConfig.getTimerFactory().getElapsedTimer();
+	static  AtomicLong commitedTransactions = new AtomicLong(0);     //the count of committed transactions
+	static  AtomicLong rollbackedTranasactions = new AtomicLong(0);  //the count of rollbacked transactions
 	private List<DBStatementDetails> dbStatementDetails = new ArrayList<DBStatementDetails>();
+	private long startTime;
 	private String tns;
 	private String userName;
+	private long endTime;
+	private long duration;
+	private int causedRollBack = -1;
+	private long uId;
+	
 	
 	private DBTransaction(DBStatement [] statements, Connection connection, ILog LOG, ITransactionListener transActionListener){
 		this.statements = statements;
@@ -47,27 +58,50 @@ public class DBTransaction implements IDBTransaction {
 		this.LOG = LOG;
 	}
 	
-	
-	
-	public void execute() {
+	void setUpVisit(){
 		visit = DBConfig.getVisitFactory().getVist();
 		//user local transaction id
 		if(visit != null){
 			visit.setTransactionNo(visit.getTransactionNo() + 1);
 			visit.getTransactionNo();
+			uId = visit.getVisitId();
+			//visit.get
+			/*User u = AppUtil.getCurUser();
+			if(u!=null) uId = u.getId();*/
 		}
+	}
+	
+	public void execute() {
+		setUpVisit();
 		try{
 			timer.start();
+			startTime = timer.getStartTime();
 			for (; i < statements.length; i++) {
+				DBStatementDetails d = statements[i].getDetails();
 				statements[i].getDetails().setTransactionIsolationLevel(connection.getTransactionIsolation());
+				timerDbStatement.start();
+				d.startTime = timerDbStatement.getStartTime();
 				statements[i].execute(connection);
+				timerDbStatement.stop();
+				/*if((i+1) % 4 == 0){
+					throw new RuntimeException("deliberate exception"); 
+				}*/
+				d.endTime = timerDbStatement.getEndTime();
+				d.duration = d.endTime - d.startTime;
 			}
 			timer.stop();
-			LOG.debug(getTransactionClassesAndSqls());
+			endTime = timer.getEndTime();
+			duration = endTime - startTime;
+			LOG.debug(getTrInfoForLog(null));
 		}
 		catch (Exception e) {
+			String message= null;
+			if(statements != null && statements.length > 0) {
+				causedRollBack = i;
+				//LOG.debug(getTrInfoForLog(AppUtil.exceptionToString(e)));
+			}
 			// TODO: handle exception
-			throw new JDBCException(e);
+			throw toJdbcException(e, message);
 		}
 	}
 	
@@ -76,11 +110,10 @@ public class DBTransaction implements IDBTransaction {
 			connection.commit();
 			commitedTransactions.incrementAndGet();
 			if(listener!=null)listener.afterCommit(this);
-			//addCommitedTransaction();
 			if(visit != null) visit.setCommittedTransactionCnt(visit.getCommittedTransactionCnt() + 1);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw new JDBCException(e);
+			e.printStackTrace();
+			throw toJdbcException(e, null);
 		}
 	}
 	
@@ -90,13 +123,14 @@ public class DBTransaction implements IDBTransaction {
 			if(visit != null) visit.setRollBackedTransactionCnt(visit.getRollBackedTransactionCnt() + 1);
 			connection.rollback();
 			rollbackedTranasactions.incrementAndGet();
+			timer.stop();
+			endTime = timer.getEndTime();
+			duration = endTime - startTime;
 			if(listener!=null)listener.afterRollBack(this);
-			//addRollbackedTransaction();
-			//ApplicationGlobals.getApplicationGlobals().addRollBackedTransaction(this);
 			rollBacked = true;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw new JDBCException(e);
+			e.printStackTrace();
+			throw toJdbcException(e, null);
 		}
 	}
 	
@@ -105,8 +139,8 @@ public class DBTransaction implements IDBTransaction {
 		try {
 			//connection.setTransactionIsolation(isolationLevel);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			throw new JDBCException(e);
+			e.printStackTrace();
+			throw toJdbcException(e, null);
 		}
 	}
 	
@@ -114,8 +148,8 @@ public class DBTransaction implements IDBTransaction {
 		try {
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw new JDBCException(e);
+			e.printStackTrace();
+			throw  toJdbcException(e, null);
 		}
 	}
 	
@@ -128,69 +162,134 @@ public class DBTransaction implements IDBTransaction {
 		}
 	}
 
-
 	
-	private String getTransactionClassesAndSqls (){
-		if(statements == null || statements.length == 0) return "";
-		StringBuilder sbclasses = new StringBuilder();
-		StringBuilder sSqls = new StringBuilder();
-		DBStatementDetails ds = statements[0].getDetails();
-		tns = ds.getTns();
-		userName = ds.getUserName();
-		sbclasses.append("\n============================== BEGIN TRANSACTION " + transactionId + " ==============================");
-		sbclasses.append("\nApp User:    " + userName);
-		sbclasses.append("\nUser TransAction No :" + (visit == null ? 0 : visit.getTransactionNo()));
-		sbclasses.append("\nTransAction Start time:" + new Date(timer.getStartTime()));
-		sbclasses.append("\nTransAction End Time:" + new Date(timer.getEndTime()));
-		sbclasses.append("\nDuration:" + timer.getDuration() + " ms.");
-		sbclasses.append("\nDB URL:      " + tns);
-		sbclasses.append("\n============================== CLASSES in TRANSACTION ==============================\n");
-		sSqls.append("============================== SQLS in TRANSACTION  ==============================\n");
+	private DBTransactionInfo getTrInfo(String exceptionMessage){
+		DBTransactionInfo trInfo = new DBTransactionInfo();
+		trInfo.glTrNo = transactionId;
+		trInfo.com = true;
+		if(visit!=null){
+			trInfo.tns = visit.getTns();
+			trInfo.uTrNo = visit.getTransactionNo();
+			trInfo.uName = visit.getFullName();
+			trInfo.uId = uId;
+		}
+		tns = trInfo.tns;
+		userName = trInfo.uName;
+		trInfo.sT = timer.getStartTime();
+		trInfo.eT = timer.getEndTime();
+		trInfo.d = timer.getDuration();
+		
+		List<DBTransactionStatementInfo> dbTrInfoStatements = new ArrayList<DBTransactionStatementInfo>();
 		for(DBStatement db : statements){
 			DBStatementDetails d = db.getDetails();
+			DBTransactionStatementInfo st = new DBTransactionStatementInfo();
 			dbStatementDetails.add(d);
-			sbclasses.append(db.getClass());
+			st.cl = db.getClass().toString();
+			st.sT = d.startTime;
+			st.eT = d.getEndTime();
+			st.sql = d.getSlqForlog();
+			dbTrInfoStatements.add(st);
+		}
+		trInfo.setSt(dbTrInfoStatements);
+		trInfo.stCnt = statements.length;
+		if(causedRollBack > -1){
+			trInfo.clCausedEx = statements[causedRollBack].getClass().toString();
+			trInfo.ex = exceptionMessage;
+			trInfo.com = false;
+			trInfo.indEx = causedRollBack;
+		}
+		return trInfo;
+	}
+	
+	private String getTrInfoForLog(String exceptionMessage){
+		return getTrInfoForLog(exceptionMessage , false);
+	}
+	
+	private String getTrInfoForLog(String exceptionMessage,  boolean json){
+		return getTrInfoForLog( exceptionMessage,  statements,  json);
+	}
+	
+	
+	private  String  getTrInfoForLog(String exceptionMessage, DBStatement[]  statements, boolean json){
+		DBTransactionInfo trInfo = getTrInfo(exceptionMessage);
+		StringBuilder sbclasses = new StringBuilder();
+		StringBuilder sSqls = new StringBuilder();
+		String s = "";
+		if(!json){
+			sbclasses.append(String.format(DBTransactionMarkConstants.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())).toString());
 			sbclasses.append("\n");
-			sSqls.append(d.getSlqForlog());
-			sSqls.append("\nStart time:" + new Date(d.getStartTime()));
-			sSqls.append("\nEnd Time:" + new Date(d.getEndTime()));
-			sSqls.append("\nDuration:" + d.getDuration() + " ms\n");
+			sbclasses.append(DBTransactionMarkConstants.TRANSACTION_ID +  trInfo.glTrNo);
+			sbclasses.append("\n");
+			sbclasses.append(DBTransactionMarkConstants.STATEMENT_COUNT +  statements.length);
+			sbclasses.append("\n");
+			sbclasses.append(DBTransactionMarkConstants.USER_NAME + trInfo.uName);
+			sbclasses.append("\n");
+			sbclasses.append(DBTransactionMarkConstants.USER_ID + trInfo.uId);
+			sbclasses.append("\n");
+			sbclasses.append(DBTransactionMarkConstants.USER_TRNO + (visit == null ? 0 : visit.getTransactionNo()));
+			sbclasses.append("\n");
+			sbclasses.append(DBTransactionMarkConstants.DURATION + timer.getDuration());
+			sbclasses.append("\n");
+			sbclasses.append(DBTransactionMarkConstants.DB_URL + trInfo.tns);
+			sbclasses.append("\n");
+			if(exceptionMessage != null){
+				sbclasses.append(DBTransactionMarkConstants.EXCEPTION_BEGIN);
+				sbclasses.append("\n");
+				sbclasses.append(exceptionMessage);
+				sbclasses.append("\n");
+				sbclasses.append(DBTransactionMarkConstants.EXCEPTION_END);
+				sbclasses.append("\n");
+			}
+			sbclasses.append(DBTransactionMarkConstants.CLASSES);
+			sbclasses.append("\n");
+			sSqls.append(DBTransactionMarkConstants.SQLS);
+			int len = (causedRollBack > 0) ? causedRollBack: statements.length;   //up the the statement that cused exception if no exception take the whole statement array
+			for(int i=0; i < len; i++){
+				DBStatement db = statements[i];
+				DBStatementDetails d = db.getDetails();
+				sbclasses.append(db.getClass());
+				sbclasses.append("\n");
+				sSqls.append("\n");
+				sSqls.append(DBTransactionMarkConstants.STATEMENT_BEGIN);   //mark up begin of statement 
+				sSqls.append("\n");
+				sSqls.append(d.getSlqForlog());
+				sSqls.append("\n");
+				sSqls.append(DBTransactionMarkConstants.START_TIME + d.getStartTime());
+				sSqls.append("\n");
+				sSqls.append(DBTransactionMarkConstants.END_TIME + d.getEndTime());
+				sSqls.append("\n");
+				sSqls.append(DBTransactionMarkConstants.DURATION + d.getDuration());
+				sSqls.append("\n");
+				sSqls.append(DBTransactionMarkConstants.STATEMENT_END);   //mark up end of statement
+			}
 			sSqls.append("\n");
+			sbclasses.append(sSqls.toString());
+			sSqls.append("\n");
+			sbclasses.append(DBTransactionMarkConstants.TRANSACTION_END);
+			sSqls.append("\n");
+			s = sbclasses.toString();
+			//s = sbclasses.append(String.format(DBTransactionMarkConstatns.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())).toString()).toString();
+		}else{
+			
 		}
-		sSqls.append("============================== END TRANSACTION " + transactionId + " ==============================\n");
-		return sbclasses.append(sSqls.toString()).toString();
+		return s;
 	}
 	
 
+	
 
-	/**Check if transaction has update statement*/
-	public boolean isLogUpdate(){
-		if(visit == null || !visit.getVisitAdditionals().isLogUpdate()) return false;
-		if(statements.length > 1) return true;
-		for(DBStatement db : statements){
-			if(db instanceof UpdateSqlStatement || db instanceof StoredProcedure) return true;
-		}
-		return false;
-	}
 	
-	/**Check if Select is loggable*/
-	public boolean isLogSelect() {
-		// TODO Auto-generated method stub
-		return  (visit != null && visit.getVisitAdditionals().isLogSelect() &&  ((statements.length == 1 || statements[0] instanceof SelectSqlStatement)));
+
+	public long getStartTime() {
+		return startTime;
 	}
-	
-	public  long getStartTime(){
-		return timer.getStartTime();
+	public long getEndTime() {
+		return endTime;
 	}
-	
-	public long getEndTime(){
-		return timer.getEndTime();
+	public long getDuration() {
+		return duration;
 	}
-	
-	public long getDuration(){
-		return timer.getDuration();
-	}
-	
+
 	public List<DBStatementDetails> getDbStatementDetails(){
 		return dbStatementDetails;
 	}
@@ -226,4 +325,177 @@ public class DBTransaction implements IDBTransaction {
 		}
 	}
 	
+	public static JDBCException toJdbcException(Exception ex, String message){
+		String msg = ex.getMessage();
+	    msg = msg == null ? ("\n" + DbUtils.exceptionToString(ex)) : (msg+ "\n" +  DbUtils.exceptionToString(ex));
+		JDBCException jdbcex = new JDBCException(message == null ? "" :message, ex);
+		return jdbcex;
+	}
+	
+	
+	
+	
+
+	
+	static class DBTransactionInfo implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5242506415676406977L;
+		long glTrNo;
+		long uTrNo;
+		long sT;
+		long eT;
+		long d;
+		List<DBTransactionStatementInfo> st;
+		long uId;
+		String uName;
+		boolean com;
+		String ex;
+		String tns;
+		String clCausedEx;
+		Integer indEx;
+		int stCnt;
+
+		public DBTransactionInfo(){
+			
+		}
+		
+
+		public long getGlTrNo() {
+			return glTrNo;
+		}
+		public void setGlTrNo(long glTrNo) {
+			this.glTrNo = glTrNo;
+		}
+		public long getuTrNo() {
+			return uTrNo;
+		}
+		public void setuTrNo(long uTrNo) {
+			this.uTrNo = uTrNo;
+		}
+		public long getsT() {
+			return sT;
+		}
+		public void setsT(long sT) {
+			this.sT = sT;
+		}
+		public long geteT() {
+			return eT;
+		}
+		public void seteT(long eT) {
+			this.eT = eT;
+		}
+		public long getD() {
+			return d;
+		}
+		public void setD(long d) {
+			this.d = d;
+		}
+		public List<DBTransactionStatementInfo> getSt() {
+			return st;
+		}
+		public void setSt(List<DBTransactionStatementInfo> statements) {
+			this.st = statements;
+		}
+		public long getuId() {
+			return uId;
+		}
+		public void setuId(long uId) {
+			this.uId = uId;
+		}
+		public String getuName() {
+			return uName;
+		}
+		public void setuName(String uName) {
+			this.uName = uName;
+		}
+		public boolean isCom() {
+			return com;
+		}
+		public void setCom(boolean com) {
+			this.com = com;
+		}
+		public String getEx() {
+			return ex;
+		}
+		public void setEx(String ex) {
+			this.ex = ex;
+		}
+		public String getTns() {
+			return tns;
+		}
+		public void setTns(String tns) {
+			this.tns = tns;
+		}
+		public String getClCausedEx() {
+			return clCausedEx;
+		}
+		public void setClCausedEx(String clCausedEx) {
+			this.clCausedEx = clCausedEx;
+		}
+		public int getStCnt() {
+			return stCnt;
+		}
+		public void setStCnt(int stCnt) {
+			this.stCnt = stCnt;
+		}
+		public Integer getIndEx() {
+			return indEx;
+		}
+		public void setIndEx(Integer indEx) {
+			this.indEx = indEx;
+		}
+	}
+	
+	private static  class  DBTransactionStatementInfo implements Serializable{
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5761312972297075896L;
+		String cl;
+		String sql;
+		long sT;
+		long eT;
+		long d;
+		
+		public DBTransactionStatementInfo() {
+			// TODO Auto-generated constructor stub
+		}
+		public String getCl() {
+			return cl;
+		}
+		public void setCl(String cl) {
+			this.cl = cl;
+		}
+		public String getSql() {
+			return sql;
+		}
+		public void setSql(String sql) {
+			this.sql = sql;
+		}
+		public long getsT() {
+			return sT;
+		}
+		public void setsT(long sT) {
+			this.sT = sT;
+		}
+		public long geteT() {
+			return eT;
+		}
+		public void seteT(long eT) {
+			this.eT = eT;
+		}
+		public long getD() {
+			return d;
+		}
+		public void setD(long d) {
+			this.d = d;
+		}
+		public static long getSerialversionuid() {
+			return serialVersionUID;
+		}
+		
+	};
 }

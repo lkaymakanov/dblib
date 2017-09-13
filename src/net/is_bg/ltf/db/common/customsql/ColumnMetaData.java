@@ -54,4 +54,9 @@ public class ColumnMetaData {
 	public void setDisplaySize(int displaySize) {
 		this.displaySize = displaySize;
 	}
+	
+	@Override
+	public String toString() {
+		return catalogName + "." + tableName + "." + columnName +", " + columnType + ", " + precision;
+	}
 }

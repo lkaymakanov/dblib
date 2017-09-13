@@ -6,7 +6,6 @@ import net.is_bg.ltf.db.common.interfaces.IAbstractModel;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 
 public class CustomSqlDao extends AbstractMainDao{
-
 	/**
 	 * 
 	 */
@@ -14,7 +13,6 @@ public class CustomSqlDao extends AbstractMainDao{
 
 	public CustomSqlDao(IConnectionFactory connectionFactory) {
 		super(connectionFactory);
-		// TODO Auto-generated constructor stub
 	}
 	
 	private IResultSetData performUpdate(String sql, String dataSource){
@@ -22,7 +20,6 @@ public class CustomSqlDao extends AbstractMainDao{
 		UpdateSqlStatement  update = new  UpdateSqlStatement() {
 			@Override
 			protected String getSqlString() {
-				// TODO Auto-generated method stub
 				return sqll;
 			}
 		};

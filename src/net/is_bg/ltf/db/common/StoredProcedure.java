@@ -27,17 +27,9 @@ public abstract class StoredProcedure extends DBStatementAdapter {
 		try {
 			sql = getProcedureName();
 			callableStatement = connection.prepareCall(sql);
-			setParameters(callableStatement);
-			
-			//get the start time of execution
-			details.startTimer();
-			
 			//execute procedure
+			setParameters(callableStatement);
 			callableStatement.executeUpdate();
-			
-			//get the end time of execution
-			details.stopTimer();
-			
 			retrieveResult(callableStatement);
 		} catch (SQLException e) {
 			throw new JDBCException(e);

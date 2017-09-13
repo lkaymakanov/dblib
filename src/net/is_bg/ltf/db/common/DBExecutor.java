@@ -5,7 +5,6 @@ import java.sql.Connection;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactoryX;
 import net.is_bg.ltf.db.common.interfaces.IDBTransaction;
-import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 
 
 // TODO: Auto-generated Javadoc
@@ -15,7 +14,6 @@ import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 public class DBExecutor {
 
 	/** The log. */
-	private static ILog LOG = DBConfig.getDbLogFactory().getLog(DBExecutor.class);
 	
 	/** The factory. */
 	private IConnectionFactory factory;
@@ -96,7 +94,7 @@ public class DBExecutor {
 	 */
 	public void execute(DBStatement[] statements, String dbResourceName, int isolationLevel) {
 		Connection connection = dbResourceName == null  ?  factory.getConnection() :  (factory instanceof IConnectionFactoryX ? ((IConnectionFactoryX)factory).getConnection(dbResourceName) : factory.getConnection()) ;
-		this.executeTransaction(new DBTransaction.DBTransactionBuilder(statements, connection, LOG).build(), dbResourceName, isolationLevel);
+		this.executeTransaction(new DBTransaction.DBTransactionBuilder(statements, connection, DBConfig.getDbLogFactory().getLog(DBExecutor.class)).build(), dbResourceName, isolationLevel);
 	}
 	
 	
@@ -116,9 +114,9 @@ public class DBExecutor {
 			trans.commit();
 		}
 		catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 			trans.rollBack();
-			throw new JDBCException(e);
+			throw DBTransaction.toJdbcException(e, null);
 		}
 		finally{
 			trans.cleanUp();

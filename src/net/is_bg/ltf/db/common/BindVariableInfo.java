@@ -4,7 +4,7 @@ package net.is_bg.ltf.db.common;
 /**
  * The Class BindVariableInfo.
  */
-public class BindVariableInfo {
+class BindVariableInfo {
 	
 	/** The value. */
 	private Object 	value;
@@ -17,6 +17,8 @@ public class BindVariableInfo {
 	
 	/** The outputparam. */
 	private boolean outputparam = false;
+	
+	private boolean setInPreparedStatement = false;
 
 	/**
 	 * Instantiates a new bind variable info.
@@ -30,6 +32,7 @@ public class BindVariableInfo {
 		this.type=type;
 		this.position=position;
 		this.outputparam = false;
+		
 	}
 	
 	/**
@@ -85,5 +88,16 @@ public class BindVariableInfo {
 	public boolean IsOutputParam() {
 		// TODO Auto-generated method stub
 		return outputparam;
+	}
+
+	public boolean isSetInPreparedStatement() {
+		return setInPreparedStatement;
+	}
+
+	void setSetInPreparedStatement() {
+		this.setInPreparedStatement = true;
 	}	
+	
+	
+	
 }

@@ -4,6 +4,6 @@ import java.sql.ResultSetMetaData;
 
 public interface IResultSetMetaDataListener {
 
-	public void processMetaData(ResultSetMetaData metadata);
+	public Object processMetaData(ResultSetMetaData metadata);
 	
 }
