@@ -41,14 +41,10 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 		};
 	}
 	
-	@Override
-	protected String rtnSqlString(String sql) {
-		return super.rtnSqlString(getSqlString());
-	}
 	
 	@Override
 	protected String getSqlString() {
-		return sql;// markedText== null ? sqlText.getText() : markedText;
+		return rtnSqlCount(sql);// markedText== null ? sqlText.getText() : markedText;
 	}
 	
 	@Override
