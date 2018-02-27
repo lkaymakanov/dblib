@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import net.is_bg.ltf.db.common.DBTransactionMarkConstants;
+import net.is_bg.ltf.db.common.interfaces.IAbstractModel;
 
 
 class SqlLogFileReader {
@@ -17,9 +18,9 @@ class SqlLogFileReader {
 	private InputStream fileStream;   //the file stream used to read the file content
 	private int fileOffset = 0;       //offset in the current file 
 	private FileInfo fileInfo;        //filename & size
-	private ITokenProcessor tokenProcessor;     //processor for each token
+	private ITokenProcessor tokenProcessor = new TokenProcessor();     //processor for each token
 	
-	private SqlLogFileReader(File f, int bufferSizeInBytes, String encoding, ITokenProcessor tokenProcessor) throws IOException{
+	private SqlLogFileReader(File f, int bufferSizeInBytes, String encoding) throws IOException{
 	  FILE_ENCODING = encoding;
 	  fileInfo = new FileInfo();
 	  fileInfo.fileName = f.getName();
@@ -29,12 +30,11 @@ class SqlLogFileReader {
 	  fb = new FileBuffer();
 	  fb.buffer = new byte [BUFFER_SIZE];    //allocate memory buffer
 	  fileInfo.fileBufferSize = BUFFER_SIZE;
-	  this.tokenProcessor = tokenProcessor;
 	  System.out.println("File name = " + fileInfo.fileName + " size:" + fileInfo.fileSize + " bytes " );
 	}
 	
-	private SqlLogFileReader(String file, int bufferSizeInBytes, String encoding, ITokenProcessor tokenProcessor) throws IOException{
-		this(new File(file), bufferSizeInBytes, encoding, tokenProcessor);
+	private SqlLogFileReader(String file, int bufferSizeInBytes, String encoding) throws IOException{
+		this(new File(file), bufferSizeInBytes, encoding);
 	}
 	
 	/***
@@ -121,6 +121,11 @@ class SqlLogFileReader {
 					fb.startIndexOfLastDelimiter = endTokenIndex;
 					fb.endIndexOfLastDelimiter = endTokenIndex + endTokenLen;
 					tokenProcessor.processToken(new String(fb.buffer, startTokenIndex, endTokenIndex - startTokenIndex, FILE_ENCODING), startTokenIndex, endTokenIndex, tokenIndex++);
+					//System.out.println((new String(fb.buffer, stratTokenIndex, endTokenIndex - stratTokenIndex, FILE_ENCODING )));
+					//System.out.println();
+					//System.out.println("token start  " + stratTokenIndex + " token end " +endTokenIndex );
+					//tokenProcessor.processToken("", stratTokenIndex, endTokenIndex, tokenIndex);
+					//processToken(fb, stratTokenIndex, endTokenIndex, tokenIndex++);
 					break;
 				}
 				//search for end begin token & indicate error if fount
@@ -149,13 +154,13 @@ class SqlLogFileReader {
 			fillBuffer(fileStream);
 			fb.startIndexOfLastDelimiter = -1;
 			searchTokens(fb, beginTokenDelimiter, endTokenDelimiter);
-			System.out.println("buffer size = " + fb.size + ", buffer offset in file " + fb.fileOffset + ", Buffer end delimiter last index " + fb.endIndexOfLastDelimiter + 
-					", Number of tokens " + fb.numberOfTokensInBuffer);
+			System.out.println(" buffer size = " + fb.size + ", buffer offset in file " + fb.fileOffset + ", Buffer end delimiter last index " + fb.endIndexOfLastDelimiter + 
+					", Number of tokens " + fb.numberOfTokensInBuffer) ;
 		}
 	}
 	
 	public static void main(String [] args) throws IOException{
-		SqlLogFileReader  s = new SqlLogFileReader(new File("D:\\sher\\tomcat.log"), 16*1024, "Windows-1251", new TokenProcessor());
+		SqlLogFileReader  s = new SqlLogFileReader(new File("D:\\sher\\tomcat.log"), 16*1024, "Windows-1251");
 		s.searchTokens(DBTransactionMarkConstants.TRANSACTION_BEGIN + "\r\n", DBTransactionMarkConstants.TRANSACTION_END+"\r\n");
 	}
 	
@@ -166,7 +171,7 @@ class SqlLogFileReader {
 		private int fileBufferSize;                   //the size of buffer used to read the log file
 	}
 	
-	private static class FileBuffer{
+	private class FileBuffer{
 		private int size;   						   //the number of bytes in buffer 
 		private byte [] buffer;						   //the buffer
 		private int fileOffset = -1;   		   		   //the offset of buffer in file
@@ -175,7 +180,7 @@ class SqlLogFileReader {
 		private int numberOfTokensInBuffer;            //the number of tokens fount in buffer
 	}
 	
-	private static class DbStatementInfo{
+	private class DbStatementInfo{
 		private String classs;                        //then name of statement class
 		private String sql;                           //the statement sql
 		private long startTime;                       //the start time of statement execution
@@ -189,10 +194,10 @@ class SqlLogFileReader {
 	 *
 	 */
 	public static interface ITokenProcessor{
-		public void processToken(String token, int startTokenIndex, int endTokenIndex, int tokenIndex);
+		public void processToken(String token, int stratTokenIndex, int endTokenIndex, int tokenIndex);
 	}
 	
-	private static class DbTransactionInfo {
+	private class DbTransactionInfo implements IAbstractModel{
 		long transactionId;
 		int statementCount;
 		String userName;
@@ -201,10 +206,12 @@ class SqlLogFileReader {
 		long duration;
 		String dbUrl;
 		List<DbStatementInfo> statements = new ArrayList<DbStatementInfo>();
+		@Override
+		public long getId() {return 0;}
 	}
 	
 	
-	private static class TokenProcessor implements ITokenProcessor{
+	private class TokenProcessor implements ITokenProcessor{
 		@Override
 		public void processToken(String token, int startTokenIndex, int endTokenIndex, int tokenIndex) {
 			//String token = (new String(fb.buffer, startTokenIndex, endTokenIndex - startTokenIndex, FILE_ENCODING ));

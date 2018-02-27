@@ -3,7 +3,6 @@ package net.is_bg.ltf.db.common.interfaces.logging;
 import net.is_bg.ltf.db.common.impl.logging.LogFactorySystemOut;
 
 
-// TODO: Auto-generated Javadoc
 /*
  * Copyright 2001-2004 The Apache Software Foundation.
  * 
@@ -72,72 +71,60 @@ public interface ILog {
 
     /**
      * <p> Is debug logging currently enabled? </p>
-     * 
+     *
      * <p> Call this method to prevent having to perform expensive operations
      * (for example, <code>String</code> concatenation)
      * when the log level is more than debug. </p>
-     *
-     * @return true, if is debug enabled
      */
     public boolean isDebugEnabled();
 
 
     /**
      * <p> Is error logging currently enabled? </p>
-     * 
+     *
      * <p> Call this method to prevent having to perform expensive operations
      * (for example, <code>String</code> concatenation)
      * when the log level is more than error. </p>
-     *
-     * @return true, if is error enabled
      */
     public boolean isErrorEnabled();
 
 
     /**
      * <p> Is fatal logging currently enabled? </p>
-     * 
+     *
      * <p> Call this method to prevent having to perform expensive operations
      * (for example, <code>String</code> concatenation)
      * when the log level is more than fatal. </p>
-     *
-     * @return true, if is fatal enabled
      */
     public boolean isFatalEnabled();
 
 
     /**
      * <p> Is info logging currently enabled? </p>
-     * 
+     *
      * <p> Call this method to prevent having to perform expensive operations
      * (for example, <code>String</code> concatenation)
      * when the log level is more than info. </p>
-     *
-     * @return true, if is info enabled
      */
     public boolean isInfoEnabled();
 
 
     /**
      * <p> Is trace logging currently enabled? </p>
-     * 
+     *
      * <p> Call this method to prevent having to perform expensive operations
      * (for example, <code>String</code> concatenation)
      * when the log level is more than trace. </p>
-     *
-     * @return true, if is trace enabled
      */
     public boolean isTraceEnabled();
 
 
     /**
      * <p> Is warn logging currently enabled? </p>
-     * 
+     *
      * <p> Call this method to prevent having to perform expensive operations
      * (for example, <code>String</code> concatenation)
      * when the log level is more than warn. </p>
-     *
-     * @return true, if is warn enabled
      */
     public boolean isWarnEnabled();
 

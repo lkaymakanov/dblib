@@ -1,13 +1,17 @@
 
 package net.is_bg.ltf.db.common;
 
+import java.io.PrintWriter;
 import java.io.Serializable;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+
+
 import net.is_bg.ltf.db.common.interfaces.IDBTransaction;
 import net.is_bg.ltf.db.common.interfaces.ITransactionListener;
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
@@ -64,10 +68,6 @@ public class DBTransaction implements IDBTransaction {
 		if(visit != null){
 			visit.setTransactionNo(visit.getTransactionNo() + 1);
 			visit.getTransactionNo();
-			uId = visit.getVisitId();
-			//visit.get
-			/*User u = AppUtil.getCurUser();
-			if(u!=null) uId = u.getId();*/
 		}
 	}
 	
@@ -98,7 +98,7 @@ public class DBTransaction implements IDBTransaction {
 			String message= null;
 			if(statements != null && statements.length > 0) {
 				causedRollBack = i;
-				//LOG.debug(getTrInfoForLog(AppUtil.exceptionToString(e)));
+				LOG.debug(getTrInfoForLog(exceptionToString(e)));
 			}
 			// TODO: handle exception
 			throw toJdbcException(e, message);
@@ -110,7 +110,7 @@ public class DBTransaction implements IDBTransaction {
 			connection.commit();
 			commitedTransactions.incrementAndGet();
 			if(listener!=null)listener.afterCommit(this);
-			if(visit != null) visit.setCommittedTransactionCnt(visit.getCommittedTransactionCnt() + 1);
+			//if(visit != null) visit.setCommittedTransactionCnt(visit.getCommittedTransactionCnt() + 1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw toJdbcException(e, null);
@@ -120,7 +120,7 @@ public class DBTransaction implements IDBTransaction {
 
 	public void rollBack(){
 		try {
-			if(visit != null) visit.setRollBackedTransactionCnt(visit.getRollBackedTransactionCnt() + 1);
+			//if(visit != null) visit.setRollBackedTransactionCnt(visit.getRollBackedTransactionCnt() + 1);
 			connection.rollback();
 			rollbackedTranasactions.incrementAndGet();
 			timer.stop();
@@ -270,13 +270,18 @@ public class DBTransaction implements IDBTransaction {
 			s = sbclasses.toString();
 			//s = sbclasses.append(String.format(DBTransactionMarkConstatns.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())).toString()).toString();
 		}else{
-			
+			try {
+				//s = om.writeValueAsString(trInfo);
+				//s = String.format(DBTransactionMarkConstants.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())) + s + String.format(DBTransactionMarkConstants.TRANSACTION_END_ENDTIME, new Date(timer.getStartTime())).toString();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return s;
 	}
 	
 
-	
 
 	
 
@@ -327,14 +332,25 @@ public class DBTransaction implements IDBTransaction {
 	
 	public static JDBCException toJdbcException(Exception ex, String message){
 		String msg = ex.getMessage();
-	    msg = msg == null ? ("\n" + DbUtils.exceptionToString(ex)) : (msg+ "\n" +  DbUtils.exceptionToString(ex));
+	    msg = msg == null ? ("\n" + exceptionToString(ex)) : (msg+ "\n" +  exceptionToString(ex));
 		JDBCException jdbcex = new JDBCException(message == null ? "" :message, ex);
 		return jdbcex;
 	}
 	
 	
+	private static String exceptionToString(Exception e){
+		if(e== null) return "";
+		return  ( e.toString() + e.getMessage()) == null ? "" : " " +  e.getCause() + getStackTrace(e);
+	}
 	
 	
+	public static String   getStackTrace(Exception ex){
+		if(ex == null) return "";
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		ex.printStackTrace(pw);
+		return sw.toString(); 
+	}
 
 	
 	static class DBTransactionInfo implements Serializable{
