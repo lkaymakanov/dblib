@@ -52,13 +52,15 @@ public class DBTransaction implements IDBTransaction {
 	private long duration;
 	private int causedRollBack = -1;
 	private long uId;
+	private boolean stealth;
 	
 	
-	private DBTransaction(DBStatement [] statements, Connection connection, ILog LOG, ITransactionListener transActionListener){
+	private DBTransaction(DBStatement [] statements, Connection connection, ILog LOG, ITransactionListener transActionListener, boolean steatlh){
 		this.statements = statements;
 		this.connection = connection;
 		this.transactionId = transactionIdSequence.incrementAndGet();
 		this.listener = transActionListener;
+		this.stealth = steatlh;
 		this.LOG = LOG;
 	}
 	
@@ -215,6 +217,7 @@ public class DBTransaction implements IDBTransaction {
 		StringBuilder sbclasses = new StringBuilder();
 		StringBuilder sSqls = new StringBuilder();
 		String s = "";
+		if(stealth) return s;
 		if(!json){
 			sbclasses.append(String.format(DBTransactionMarkConstants.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())).toString());
 			sbclasses.append("\n");
@@ -317,16 +320,20 @@ public class DBTransaction implements IDBTransaction {
 	public static class DBTransactionBuilder {
 		DBStatement [] statements; Connection connection; ILog LOG;
 		ITransactionListener transActionListener = DBConfig.getTransactionListener();
-		
+		boolean stealth;
 		public DBTransactionBuilder (DBStatement [] statements, Connection connection, ILog LOG){
 			this.statements = statements;
 			this.connection = connection;
 			this.LOG = LOG;
 		}
 		
+		public DBTransactionBuilder setStealth(boolean stealth) {
+			this.stealth = stealth;
+			return this;
+		}
 		
 		public IDBTransaction build(){
-			return new DBTransaction(statements, connection, LOG, transActionListener);
+			return new DBTransaction(statements, connection, LOG, transActionListener, stealth);
 		}
 	}
 	

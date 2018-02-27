@@ -2,6 +2,7 @@ package net.is_bg.ltf.db.common;
 
 import java.sql.Connection;
 
+import net.is_bg.ltf.db.common.DBTransaction.DBTransactionBuilder;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactoryX;
 import net.is_bg.ltf.db.common.interfaces.IDBTransaction;
@@ -17,6 +18,8 @@ public class DBExecutor {
 	
 	/** The factory. */
 	private IConnectionFactory factory;
+
+	protected boolean stealth;
 	
 	/** The Constant DEFAULT_TRANSACTION_ISOLATION_LEVEL. */
 	public static final int DEFAULT_TRANSACTION_ISOLATION_LEVEL  = Connection.TRANSACTION_READ_COMMITTED;
@@ -86,17 +89,13 @@ public class DBExecutor {
 		execute(statements, null, isolationLevel);
 	}
 
-	/**
-	 * Execute.
-	 *
-	 * @param statements the statements
-	 * @param isolationLevel the isolation level
-	 */
-	public void execute(DBStatement[] statements, String dbResourceName, int isolationLevel) {
-		Connection connection = dbResourceName == null  ?  factory.getConnection() :  (factory instanceof IConnectionFactoryX ? ((IConnectionFactoryX)factory).getConnection(dbResourceName) : factory.getConnection()) ;
-		this.executeTransaction(new DBTransaction.DBTransactionBuilder(statements, connection, DBConfig.getDbLogFactory().getLog(DBExecutor.class)).build(), dbResourceName, isolationLevel);
-	}
 	
+	
+	private  void execute(DBStatement[] statements, String dbResourceName, int isolationLevel) {
+		Connection connection = dbResourceName == null  ?  factory.getConnection() :  (factory instanceof IConnectionFactoryX ? ((IConnectionFactoryX)factory).getConnection(dbResourceName) : factory.getConnection()) ;
+		DBTransactionBuilder bd = 	new DBTransaction.DBTransactionBuilder(statements, connection, DBConfig.getDbLogFactory().getLog(DBExecutor.class)).setStealth(stealth);
+		this.executeTransaction(bd.build(), dbResourceName, isolationLevel);
+	}
 	
 	/**
 	 * Handle db statements as one DBTransaction !!!
