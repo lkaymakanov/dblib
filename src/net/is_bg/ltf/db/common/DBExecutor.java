@@ -91,7 +91,7 @@ public class DBExecutor {
 
 	
 	
-	private  void execute(DBStatement[] statements, String dbResourceName, int isolationLevel) {
+	public  void execute(DBStatement[] statements, String dbResourceName, int isolationLevel) {
 		Connection connection = dbResourceName == null  ?  factory.getConnection() :  (factory instanceof IConnectionFactoryX ? ((IConnectionFactoryX)factory).getConnection(dbResourceName) : factory.getConnection()) ;
 		DBTransactionBuilder bd = 	new DBTransaction.DBTransactionBuilder(statements, connection, DBConfig.getDbLogFactory().getLog(DBExecutor.class)).setStealth(stealth);
 		this.executeTransaction(bd.build(), dbResourceName, isolationLevel);

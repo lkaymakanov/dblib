@@ -48,6 +48,16 @@ public  abstract class AbstractMainDao implements Serializable{
 	    dbExecutor.execute(statement, dbREsourceName, DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL);
 	}
 	
+	
+	public final void execute(DBStatement [] statements, String dbREsourceName) {
+	    dbExecutor.execute(statements, dbREsourceName, DBExecutor.DEFAULT_TRANSACTION_ISOLATION_LEVEL);
+	}
+	
+	
+	public final void execute(DBStatement [] statements, String dbREsourceName, int isolationLevel) {
+	    dbExecutor.execute(statements, dbREsourceName, isolationLevel);
+	}
+	
 	/**
 	 * Execute.
 	 *
