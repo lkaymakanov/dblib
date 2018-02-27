@@ -65,6 +65,5 @@ public class CustomSqlDao extends AbstractMainDao{
 			super(factory);
 			stealth = stlt;
 		}
-		
 	}
 }
