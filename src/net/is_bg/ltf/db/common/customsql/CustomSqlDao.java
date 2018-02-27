@@ -1,6 +1,7 @@
 package net.is_bg.ltf.db.common.customsql;
 
 import net.is_bg.ltf.db.common.AbstractMainDao;
+import net.is_bg.ltf.db.common.DBExecutor;
 import net.is_bg.ltf.db.common.UpdateSqlStatement;
 import net.is_bg.ltf.db.common.interfaces.IAbstractModel;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
@@ -12,7 +13,12 @@ public class CustomSqlDao extends AbstractMainDao{
 	private static final long serialVersionUID = -6656168418142962121L;
 
 	public CustomSqlDao(IConnectionFactory connectionFactory) {
-		super(connectionFactory);
+		this(connectionFactory, true);
+	}
+	
+	public CustomSqlDao(IConnectionFactory connectionFactory, boolean stlth){
+		super(new DbExec(connectionFactory, stlth));
+		
 	}
 	
 	private IResultSetData performUpdate(String sql, String dataSource){
@@ -34,6 +40,7 @@ public class CustomSqlDao extends AbstractMainDao{
 		return data;
 	}
 	
+	
 	private IResultSetData performSelect(String sql, String dataSource){
 		//create select statement 
 		CustomSelect<IAbstractModel> select = new CustomSelect<IAbstractModel>(sql);
@@ -53,4 +60,11 @@ public class CustomSqlDao extends AbstractMainDao{
 		else return performUpdate(sql, dataSource);
 	}
 	
+	static class DbExec extends DBExecutor{
+		public DbExec(IConnectionFactory factory, boolean stlt) {
+			super(factory);
+			stealth = stlt;
+		}
+		
+	}
 }
