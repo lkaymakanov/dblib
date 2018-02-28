@@ -14,7 +14,7 @@ public class ResultSetData implements IResultSetData{
 	}
 	
 	@Override
-	public List<ColumnMetaData> getColumMetaData() {
+	public List<ColumnMetaData> getColumnMetaData() {
 		return columndata;
 	}
 

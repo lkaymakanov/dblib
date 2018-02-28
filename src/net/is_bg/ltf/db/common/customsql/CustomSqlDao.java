@@ -34,7 +34,7 @@ public class CustomSqlDao extends AbstractMainDao{
 		ResultSetData data = new ResultSetData();
 		ColumnMetaData meta = new ColumnMetaData();
 		meta.setColumnName("Update Count:");
-		data.getColumMetaData().add(meta);
+		data.getColumnMetaData().add(meta);
 		Object [] d = new Object [1];
 		d[0] = update.getUpdateCnt();
 		data.getResult().add(d);

@@ -29,7 +29,7 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 						metadata.setCatalogName(arg0.getCatalogName(i));
 						metadata.setDisplaySize(arg0.getColumnDisplaySize(i));
 						metadata.setPrecision(arg0.getPrecision(i));
-						resultSetData.getColumMetaData().add(metadata);
+						resultSetData.getColumnMetaData().add(metadata);
 					}
 				}
 				catch (SQLException e) {
@@ -51,8 +51,8 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 	protected void retrieveResult(ResultSet rs) throws SQLException {
 		int i =0;
 		while (rs.next()) {
-			Object [] row = new Object[resultSetData.getColumMetaData().size()];
-			for(; i < resultSetData.getColumMetaData().size(); i++){
+			Object [] row = new Object[resultSetData.getColumnMetaData().size()];
+			for(; i < resultSetData.getColumnMetaData().size(); i++){
 				Object o = rs.getObject(i+1);
 				row[i] = (o ==null ? null: o.toString());
 			}
