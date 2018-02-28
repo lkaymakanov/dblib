@@ -1,6 +1,7 @@
 package net.is_bg.ltf.db.common.customsql;
 
 import net.is_bg.ltf.db.common.AbstractMainDao;
+import net.is_bg.ltf.db.common.DBConfig;
 import net.is_bg.ltf.db.common.DBExecutor;
 import net.is_bg.ltf.db.common.UpdateSqlStatement;
 import net.is_bg.ltf.db.common.interfaces.IAbstractModel;
@@ -12,11 +13,11 @@ public class CustomSqlDao extends AbstractMainDao{
 	 */
 	private static final long serialVersionUID = -6656168418142962121L;
 
-	public CustomSqlDao(IConnectionFactory connectionFactory) {
+	private CustomSqlDao(IConnectionFactory connectionFactory) {
 		this(connectionFactory, true);
 	}
 	
-	public CustomSqlDao(IConnectionFactory connectionFactory, boolean stlth){
+	private CustomSqlDao(IConnectionFactory connectionFactory, boolean stlth){
 		super(new DbExec(connectionFactory, stlth));
 		
 	}
@@ -55,10 +56,23 @@ public class CustomSqlDao extends AbstractMainDao{
 	}
 	
 	
-	public IResultSetData execSql(String sql, String dataSource){
-		if(isSelect(sql)) return performSelect(sql, dataSource);
-		else return performUpdate(sql, dataSource);
+	public static IResultSetData execSql(String sql, String dataSource, boolean stlth){
+		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), stlth);
+		if(cd.isSelect(sql)) return cd.performSelect(sql, dataSource);
+		else return cd.performUpdate(sql, dataSource);
 	}
+	
+	public static IResultSetData execSelect(String sql, String dataSource, boolean stlth){
+		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), stlth);
+		return cd.performSelect(sql, dataSource);
+	}
+	
+	public static IResultSetData execUpdate(String sql, String dataSource, boolean stlth){
+		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), stlth);
+		return cd.performUpdate(sql, dataSource);
+	}
+	
+		
 	
 	static class DbExec extends DBExecutor{
 		public DbExec(IConnectionFactory factory, boolean stlt) {
