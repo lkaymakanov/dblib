@@ -11,8 +11,8 @@ import net.is_bg.ltf.db.common.paging.SelectPagingSqlStatement;
 public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlStatement<T> {
 	
 	private String sql;
-	
 	private ResultSetData resultSetData = new ResultSetData();
+	
 	
 	
 	public	CustomSelect(String sql){
@@ -33,7 +33,6 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 					}
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				return null;
@@ -64,8 +63,5 @@ public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlSta
 	public IResultSetData getResultSetData() {
 		return resultSetData;
 	}
-
-	
-	
 	
 }

@@ -12,7 +12,7 @@ public class CustomSqlDao extends AbstractMainDao{
 	 * 
 	 */
 	private static final long serialVersionUID = -6656168418142962121L;
-
+	
 	private CustomSqlDao(IConnectionFactory connectionFactory) {
 		this(connectionFactory, true);
 	}
@@ -56,20 +56,20 @@ public class CustomSqlDao extends AbstractMainDao{
 	}
 	
 	
-	public static IResultSetData execSql(String sql, String dataSource, boolean stlth){
-		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), stlth);
-		if(cd.isSelect(sql)) return cd.performSelect(sql, dataSource);
-		else return cd.performUpdate(sql, dataSource);
+	public static IResultSetData execSql(CustomSqlConfigParams configParams){
+		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), configParams.stealth);
+		if(cd.isSelect(configParams.sql)) return cd.performSelect(configParams.sql, configParams.dataSource);
+		else return cd.performUpdate(configParams.sql, configParams.dataSource);
 	}
 	
-	public static IResultSetData execSelect(String sql, String dataSource, boolean stlth){
-		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), stlth);
-		return cd.performSelect(sql, dataSource);
+	public static IResultSetData execSelect(CustomSqlConfigParams configParams){
+		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), configParams.stealth);
+		return cd.performSelect(configParams.sql, configParams.dataSource);
 	}
 	
-	public static IResultSetData execUpdate(String sql, String dataSource, boolean stlth){
-		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), stlth);
-		return cd.performUpdate(sql, dataSource);
+	public static IResultSetData execUpdate(CustomSqlConfigParams configParams){
+		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), configParams.stealth);
+		return cd.performUpdate(configParams.sql, configParams.dataSource);
 	}
 	
 		
