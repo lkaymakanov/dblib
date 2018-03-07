@@ -9,6 +9,7 @@ public class VisitAdditionals {
 	private Date lastActiveTime;
 	private int transactionQueueMaxSize = 100;
 	private long flags = VISIT_FLAGS.FILL_ROLLBACK_TR_QUEUE.val; 
+	private Object data;
 	
 	//flag fields
 	public boolean isShowId() {
@@ -137,5 +138,13 @@ public class VisitAdditionals {
 	public long getFlags() {
 		return flags;
 	}
-	
+	public void setFlags(long flags) {
+		this.flags = flags;
+	}
+	public void setData(Object data) {
+		this.data = data;
+	}
+	public Object getData() {
+		return data;
+	}
 }
