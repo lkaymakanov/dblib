@@ -42,10 +42,11 @@ public class CustomSqlDao extends AbstractMainDao{
 	}
 	
 	
-	private IResultSetData performSelect(String sql, String dataSource){
+	private IResultSetData performSelect(CustomSqlConfigParams cp){
 		//create select statement 
-		CustomSelect<IAbstractModel> select = new CustomSelect<IAbstractModel>(sql);
-		execute(select, dataSource);
+		CustomSelect<IAbstractModel> select = new CustomSelect<IAbstractModel>(cp.sql);
+		select.setRows(cp.getRowBegin(), cp.getRowEnd());
+		execute(select, cp.dataSource);
 		return select.getResultSetData();
 	}
 	
@@ -58,13 +59,13 @@ public class CustomSqlDao extends AbstractMainDao{
 	
 	public static IResultSetData execSql(CustomSqlConfigParams configParams){
 		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), configParams.stealth);
-		if(cd.isSelect(configParams.sql)) return cd.performSelect(configParams.sql, configParams.dataSource);
+		if(cd.isSelect(configParams.sql)) return cd.performSelect(configParams);
 		else return cd.performUpdate(configParams.sql, configParams.dataSource);
 	}
 	
 	public static IResultSetData execSelect(CustomSqlConfigParams configParams){
 		CustomSqlDao cd = new CustomSqlDao(DBConfig.getConnectionFactory(), configParams.stealth);
-		return cd.performSelect(configParams.sql, configParams.dataSource);
+		return cd.performSelect(configParams);
 	}
 	
 	public static IResultSetData execUpdate(CustomSqlConfigParams configParams){
