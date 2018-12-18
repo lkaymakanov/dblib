@@ -17,7 +17,6 @@ public abstract class SelectSqlStatement extends SqlStatement {
 	@Override
 	protected final void executeStatement(PreparedStatement prStmt) throws SQLException {
 		ResultSet rs = prStmt.executeQuery();
-		if(resultSetMetaDataListener != null) resultSetMetaDataListener.processMetaData(rs.getMetaData());
 		retrieveResult(rs);
 	}
 	

@@ -10,10 +10,6 @@ import net.is_bg.ltf.db.common.interfaces.logging.ILog;
  */
 public class DBStatementDetailsCompound extends DBStatementDetails{
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1142298606283271558L;
 	/** The details. */
 	private DBStatementDetails [] details;
 	

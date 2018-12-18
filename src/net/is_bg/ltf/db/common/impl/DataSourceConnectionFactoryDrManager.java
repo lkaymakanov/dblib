@@ -7,6 +7,7 @@ import net.is_bg.ltf.db.common.ConnectionProperties;
 import net.is_bg.ltf.db.common.JDBCException;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 
+// TODO: Auto-generated Javadoc
 /**
  * Creates connection out of connection properties
  * 
@@ -58,14 +59,24 @@ import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
  *
  */
 public class DataSourceConnectionFactoryDrManager implements IConnectionFactory {
+	
+	/** The prop. */
 	ConnectionProperties prop;
 	
+	/**
+	 * Instantiates a new data source connection factory dr manager.
+	 *
+	 * @param pr the pr
+	 */
 	public DataSourceConnectionFactoryDrManager(ConnectionProperties pr) {
 		// TODO Auto-generated constructor stub
 		prop = pr;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see net.is_bg.ltf.db.common.interfaces.IConnectionFactory#getConnection()
+	 */
 	public Connection getConnection() {
 		// TODO Auto-generated method stub
 		try{

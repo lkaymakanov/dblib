@@ -6,6 +6,7 @@ import net.is_bg.ltf.db.common.DBTransaction.DBTransactionBuilder;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactoryX;
 import net.is_bg.ltf.db.common.interfaces.IDBTransaction;
+import net.is_bg.ltf.db.common.interfaces.IUserIdProvider;
 
 
 // TODO: Auto-generated Javadoc
@@ -20,6 +21,8 @@ public class DBExecutor {
 	private IConnectionFactory factory;
 
 	protected boolean stealth;
+
+	private IUserIdProvider uIdProvider;
 	
 	/** The Constant DEFAULT_TRANSACTION_ISOLATION_LEVEL. */
 	public static final int DEFAULT_TRANSACTION_ISOLATION_LEVEL  = Connection.TRANSACTION_READ_COMMITTED;
@@ -32,6 +35,12 @@ public class DBExecutor {
 	public DBExecutor(IConnectionFactory factory) {
 		super();
 		this.factory = factory;
+	}
+	
+	public DBExecutor(IConnectionFactory factory, IUserIdProvider uIdProvider) {
+		super();
+		this.factory = factory;
+		this.uIdProvider = uIdProvider;
 	}
 
 	/**
@@ -93,7 +102,7 @@ public class DBExecutor {
 	
 	public  void execute(DBStatement[] statements, String dbResourceName, int isolationLevel) {
 		Connection connection = dbResourceName == null  ?  factory.getConnection() :  (factory instanceof IConnectionFactoryX ? ((IConnectionFactoryX)factory).getConnection(dbResourceName) : factory.getConnection()) ;
-		DBTransactionBuilder bd = 	new DBTransaction.DBTransactionBuilder(statements, connection, DBConfig.getDbLogFactory().getLog(DBExecutor.class)).setStealth(stealth);
+		DBTransactionBuilder bd = 	new DBTransaction.DBTransactionBuilder(statements, connection, DBConfig.getDbLogFactory().getLog(DBExecutor.class), uIdProvider).setStealth(stealth);
 		this.executeTransaction(bd.build(), dbResourceName, isolationLevel);
 	}
 	

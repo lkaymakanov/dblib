@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import net.is_bg.ltf.db.common.interfaces.IDBTransaction;
 import net.is_bg.ltf.db.common.interfaces.ITransactionListener;
+import net.is_bg.ltf.db.common.interfaces.IUserIdProvider;
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimer;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
@@ -25,7 +26,7 @@ import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
  * @author lubo
  *
  */
-public class DBTransaction implements IDBTransaction {
+class DBTransaction implements IDBTransaction {
 	/**
 	 * 
 	 */
@@ -52,15 +53,14 @@ public class DBTransaction implements IDBTransaction {
 	private long duration;
 	private int causedRollBack = -1;
 	private long uId;
-	private boolean stealth;
 	
 	
-	private DBTransaction(DBStatement [] statements, Connection connection, ILog LOG, ITransactionListener transActionListener, boolean steatlh){
+	
+	private DBTransaction(DBStatement [] statements, Connection connection, ILog LOG, ITransactionListener transActionListener){
 		this.statements = statements;
 		this.connection = connection;
 		this.transactionId = transactionIdSequence.incrementAndGet();
 		this.listener = transActionListener;
-		this.stealth = steatlh;
 		this.LOG = LOG;
 	}
 	
@@ -70,6 +70,9 @@ public class DBTransaction implements IDBTransaction {
 		if(visit != null){
 			visit.setTransactionNo(visit.getTransactionNo() + 1);
 			visit.getTransactionNo();
+			if(DBConfig.getVisitFactory()!=null) uId = DBConfig.getVisitFactory().getVist().getVisitId();
+			//User u = AppUtil.getCurUser();
+			//if(u!=null) uId = u.getId();
 		}
 	}
 	
@@ -112,7 +115,7 @@ public class DBTransaction implements IDBTransaction {
 			connection.commit();
 			commitedTransactions.incrementAndGet();
 			if(listener!=null)listener.afterCommit(this);
-			//if(visit != null) visit.setCommittedTransactionCnt(visit.getCommittedTransactionCnt() + 1);
+			if(visit != null) visit.setCommittedTransactionCnt(visit.getCommittedTransactionCnt() + 1);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw toJdbcException(e, null);
@@ -122,7 +125,7 @@ public class DBTransaction implements IDBTransaction {
 
 	public void rollBack(){
 		try {
-			//if(visit != null) visit.setRollBackedTransactionCnt(visit.getRollBackedTransactionCnt() + 1);
+			if(visit != null) visit.setRollBackedTransactionCnt(visit.getRollBackedTransactionCnt() + 1);
 			connection.rollback();
 			rollbackedTranasactions.incrementAndGet();
 			timer.stop();
@@ -159,8 +162,7 @@ public class DBTransaction implements IDBTransaction {
 		try {
 			if(!connection.isClosed()) connection.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			DbStatementLogUtilizer.printErrSqlStatement(LOG, statements[i]);
+			e.printStackTrace();
 		}
 	}
 
@@ -217,7 +219,6 @@ public class DBTransaction implements IDBTransaction {
 		StringBuilder sbclasses = new StringBuilder();
 		StringBuilder sSqls = new StringBuilder();
 		String s = "";
-		if(stealth) return s;
 		if(!json){
 			sbclasses.append(String.format(DBTransactionMarkConstants.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())).toString());
 			sbclasses.append("\n");
@@ -285,6 +286,15 @@ public class DBTransaction implements IDBTransaction {
 	}
 	
 
+	/*private static ObjectMapper getObjectMapper(){
+		if(om!= null) return om;
+		synchronized (DBTransaction.class) {
+			if(om == null) {
+				om = new ObjectMapper(); om.configure(JsonGenerator.Feature.QUOTE_FIELD_NAMES, false);
+			}
+		}
+		return om;
+	}*/
 
 	
 
@@ -321,19 +331,22 @@ public class DBTransaction implements IDBTransaction {
 		DBStatement [] statements; Connection connection; ILog LOG;
 		ITransactionListener transActionListener = DBConfig.getTransactionListener();
 		boolean stealth;
-		public DBTransactionBuilder (DBStatement [] statements, Connection connection, ILog LOG){
+		
+		public DBTransactionBuilder (DBStatement [] statements, Connection connection, ILog LOG, IUserIdProvider iUidProvider ){
 			this.statements = statements;
 			this.connection = connection;
 			this.LOG = LOG;
 		}
 		
+		
+		public IDBTransaction build(){
+			return new DBTransaction(statements, connection, LOG, transActionListener);
+		}
+
+
 		public DBTransactionBuilder setStealth(boolean stealth) {
 			this.stealth = stealth;
 			return this;
-		}
-		
-		public IDBTransaction build(){
-			return new DBTransaction(statements, connection, LOG, transActionListener, stealth);
 		}
 	}
 	
@@ -345,19 +358,21 @@ public class DBTransaction implements IDBTransaction {
 	}
 	
 	
+	
 	private static String exceptionToString(Exception e){
 		if(e== null) return "";
 		return  ( e.toString() + e.getMessage()) == null ? "" : " " +  e.getCause() + getStackTrace(e);
 	}
 	
 	
-	public static String   getStackTrace(Exception ex){
+	private static String   getStackTrace(Exception ex){
 		if(ex == null) return "";
 		StringWriter sw = new StringWriter();
 		PrintWriter pw = new PrintWriter(sw);
 		ex.printStackTrace(pw);
 		return sw.toString(); 
 	}
+	
 
 	
 	static class DBTransactionInfo implements Serializable{

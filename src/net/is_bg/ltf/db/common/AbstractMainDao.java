@@ -26,12 +26,16 @@ public  abstract class AbstractMainDao implements Serializable{
 	 * @param connectionFactory the connection factory
 	 */
 	public AbstractMainDao(IConnectionFactory connectionFactory) {
-		this(new DBExecutor(connectionFactory));
+		dbExecutor = new DBExecutor(connectionFactory);
 	}
+	
+	
+	
 	
 	public AbstractMainDao(DBExecutor executor) {
 		dbExecutor = executor;
 	} 
+	
 	/**
 	 * Execute.
 	 *

@@ -5,7 +5,7 @@ package net.is_bg.ltf.db.common;
  * @author lubo
  *
  */
-public class DBTransactionMarkConstants {
+class DBTransactionMarkConstants {
 	
 	    /***euro sign*/
 		public final static String  MAGICST  = new String(new char [] {'\u20AC'});    
