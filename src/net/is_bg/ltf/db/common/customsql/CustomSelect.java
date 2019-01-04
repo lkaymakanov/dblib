@@ -28,7 +28,11 @@ class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlStatement<
 						metadata.setColumnType(arg0.getColumnType(i));
 						metadata.setCatalogName(arg0.getCatalogName(i));
 						metadata.setDisplaySize(arg0.getColumnDisplaySize(i));
+						metadata.setScale(arg0.getScale(i));
 						metadata.setPrecision(arg0.getPrecision(i));
+						metadata.setColumnLabel(arg0.getColumnLabel(i));
+						metadata.setSchemaName( arg0.getSchemaName(i));
+						metadata.setTableName(arg0.getTableName(i));
 						resultSetData.getColumnMetaData().add(metadata);
 					}
 				}
