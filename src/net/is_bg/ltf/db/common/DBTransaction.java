@@ -26,7 +26,7 @@ import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
  * @author lubo
  *
  */
-class DBTransaction implements IDBTransaction {
+public class DBTransaction implements IDBTransaction {
 	/**
 	 * 
 	 */
