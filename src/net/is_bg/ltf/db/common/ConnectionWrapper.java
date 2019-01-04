@@ -96,7 +96,7 @@ public class ConnectionWrapper implements Connection{
 		wrappedConnecion.close();
 		statements = prepStatments.toArray(new DBStatement[prepStatments.size()]);
 		//create transaction & execute on empty connection
-		transaction = new DBTransaction.DBTransactionBuilder(statements, new NullConnection(), DBConfig.getDbLogFactory().getLog(ConnectionWrapper.class), null).build();
+		transaction = new DBTransaction.DBTransactionBuilder(statements, new NullConnection(), DBConfig.getDbLogFactory().getLog(ConnectionWrapper.class)).build();
 		transaction.execute();
 		transaction.commit();
 	}

@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import net.is_bg.ltf.db.common.interfaces.IDBTransaction;
 import net.is_bg.ltf.db.common.interfaces.ITransactionListener;
-import net.is_bg.ltf.db.common.interfaces.IUserIdProvider;
 import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimer;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
@@ -53,14 +52,16 @@ public class DBTransaction implements IDBTransaction {
 	private long duration;
 	private int causedRollBack = -1;
 	private long uId;
+	private boolean stealth;
 	
 	
 	
-	private DBTransaction(DBStatement [] statements, Connection connection, ILog LOG, ITransactionListener transActionListener){
+	private DBTransaction(DBStatement [] statements, Connection connection, ILog LOG, ITransactionListener transActionListener, boolean stealth){
 		this.statements = statements;
 		this.connection = connection;
 		this.transactionId = transactionIdSequence.incrementAndGet();
 		this.listener = transActionListener;
+		this.stealth = stealth;
 		this.LOG = LOG;
 	}
 	
@@ -215,6 +216,7 @@ public class DBTransaction implements IDBTransaction {
 	
 	
 	private  String  getTrInfoForLog(String exceptionMessage, DBStatement[]  statements, boolean json){
+		if(stealth) return "";
 		DBTransactionInfo trInfo = getTrInfo(exceptionMessage);
 		StringBuilder sbclasses = new StringBuilder();
 		StringBuilder sSqls = new StringBuilder();
@@ -332,7 +334,7 @@ public class DBTransaction implements IDBTransaction {
 		ITransactionListener transActionListener = DBConfig.getTransactionListener();
 		boolean stealth;
 		
-		public DBTransactionBuilder (DBStatement [] statements, Connection connection, ILog LOG, IUserIdProvider iUidProvider ){
+		public DBTransactionBuilder (DBStatement [] statements, Connection connection, ILog LOG){
 			this.statements = statements;
 			this.connection = connection;
 			this.LOG = LOG;
@@ -340,7 +342,7 @@ public class DBTransaction implements IDBTransaction {
 		
 		
 		public IDBTransaction build(){
-			return new DBTransaction(statements, connection, LOG, transActionListener);
+			return new DBTransaction(statements, connection, LOG, transActionListener, stealth);
 		}
 
 
