@@ -8,7 +8,7 @@ import net.is_bg.ltf.db.common.interfaces.IAbstractModel;
 import net.is_bg.ltf.db.common.interfaces.IResultSetMetaDataListener;
 import net.is_bg.ltf.db.common.paging.SelectPagingSqlStatement;
 
-public class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlStatement<T> {
+class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlStatement<T> {
 	
 	private String sql;
 	private ResultSetData resultSetData = new ResultSetData();
