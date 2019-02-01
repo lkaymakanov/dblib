@@ -1,5 +1,6 @@
 package net.is_bg.ltf.db.common.customsql;
 
+import java.sql.Types;
 import java.util.List;
 
 import net.is_bg.ltf.db.common.AbstractMainDao;
@@ -35,7 +36,14 @@ public class CustomSqlDao extends AbstractMainDao{
 		execute(update, dataSource);
 		ResultSetData data = new ResultSetData();
 		ColumnMetaData meta = new ColumnMetaData();
-		meta.setColumnName("Update Count:");
+		meta.setColumnName("count");
+		meta.setCatalogName("");
+		meta.setColumnClassName("");
+		meta.setColumnType(Types.BIGINT);
+		meta.setDisplaySize(100);
+		meta.setScale(0);
+		meta.setSchemaName("");
+		meta.setTableName("count");
 		data.getColumnMetaData().add(meta);
 		Object [] d = new Object [1];
 		d[0] = update.getUpdateCnt();
