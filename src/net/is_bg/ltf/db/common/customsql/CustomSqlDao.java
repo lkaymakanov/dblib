@@ -1,5 +1,7 @@
 package net.is_bg.ltf.db.common.customsql;
 
+import java.util.List;
+
 import net.is_bg.ltf.db.common.AbstractMainDao;
 import net.is_bg.ltf.db.common.DBConfig;
 import net.is_bg.ltf.db.common.DBExecutor;
@@ -73,7 +75,60 @@ public class CustomSqlDao extends AbstractMainDao{
 		return cd.performUpdate(configParams.sql, configParams.dataSource);
 	}
 	
-		
+	
+	public static IResultSetDataManager execSelectDataManager(CustomSqlConfigParams configParams){
+		return getDataManager(execSelect(configParams));
+	}
+	
+	public static IResultSetDataManager execUpdateDataManager(CustomSqlConfigParams configParams){
+		return getDataManager(execUpdate(configParams));
+	}
+	
+	
+	public static IResultSetDataManager getDataManager(final IResultSetData data) {
+		return new IResultSetDataManager() {
+			int colCnt = (data == null  || data.getColumnMetaData() == null || data.getColumnMetaData().size() ==0)  ? 0: data.getColumnMetaData().size();
+			int rowCnt = (data == null  || data.getResult() == null || data.getResult().size() ==0)  ? 0: data.getResult().size();
+			
+			@Override
+			public int getRowsCnt() {
+				return rowCnt;
+			}
+			
+			
+			@Override
+			public IRowData getRowData(int rowIndex) {
+				if(rowIndex < 0 || rowIndex >=rowCnt) return null;
+				return new RowData(data.getResult().get(rowIndex));
+			}
+			
+			
+			@Override
+			public ColumnMetaData getColumnMetaData(int colIndex) {
+				return data == null ? null : (data.getColumnMetaData() == null? null : data.getColumnMetaData().get(colIndex));
+			}
+			
+			@Override
+			public int getColsCnt() {
+				return colCnt;
+			}
+
+
+			@Override
+			public List<ColumnMetaData> getColumnsMeataData() {
+				return data == null ? null : data.getColumnMetaData();
+			}
+
+
+			@Override
+			public List<Object[]> getRows() {
+				return data == null ? null : data.getResult();
+			}
+		};
+	}
+	
+	
+	
 	
 	static class DbExec extends DBExecutor{
 		public DbExec(IConnectionFactory factory, boolean stlt) {
