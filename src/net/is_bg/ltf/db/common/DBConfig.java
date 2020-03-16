@@ -3,7 +3,6 @@ package net.is_bg.ltf.db.common;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 import net.is_bg.ltf.db.common.interfaces.IConnectionFactoryX;
 import net.is_bg.ltf.db.common.interfaces.ITransactionListener;
-import net.is_bg.ltf.db.common.interfaces.IUserIdProvider;
 import net.is_bg.ltf.db.common.interfaces.logging.ILogFactory;
 import net.is_bg.ltf.db.common.interfaces.timer.IElaplsedTimerFactory;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisitFactory;

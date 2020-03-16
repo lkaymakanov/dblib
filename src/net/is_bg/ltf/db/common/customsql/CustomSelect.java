@@ -12,42 +12,52 @@ class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlStatement<
 	
 	private String sql;
 	private ResultSetData resultSetData = new ResultSetData();
-	
+	private static class DefaultMetaDataListener implements IResultSetMetaDataListener{
+		ResultSetData resultSetData;
+		private DefaultMetaDataListener(ResultSetData resultSetData){
+			this.resultSetData = resultSetData;
+		}
+		
+		@Override
+		public Object processMetaData(ResultSetMetaData arg0) {
+			try {
+				int colcount = arg0.getColumnCount();
+				for(int i =1 ; i <=colcount; i++){
+					ColumnMetaData metadata = new ColumnMetaData();
+					metadata.setColumnName(arg0.getColumnName(i));
+					metadata.setColumnType(arg0.getColumnType(i));
+					metadata.setCatalogName(arg0.getCatalogName(i));
+					metadata.setDisplaySize(arg0.getColumnDisplaySize(i));
+					metadata.setScale(arg0.getScale(i));
+					metadata.setPrecision(arg0.getPrecision(i));
+					metadata.setColumnLabel(arg0.getColumnLabel(i));
+					metadata.setSchemaName( arg0.getSchemaName(i));
+					metadata.setTableName(arg0.getTableName(i));
+					resultSetData.getColumnMetaData().add(metadata);
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+	}
 	
 	
 	public	CustomSelect(String sql){
 		this.sql = sql;
-		this.resultSetMetaDataListener = new IResultSetMetaDataListener() {
-			@Override
-			public Object processMetaData(ResultSetMetaData arg0) {
-				try {
-					int colcount = arg0.getColumnCount();
-					for(int i =1 ; i <=colcount; i++){
-						ColumnMetaData metadata = new ColumnMetaData();
-						metadata.setColumnName(arg0.getColumnName(i));
-						metadata.setColumnType(arg0.getColumnType(i));
-						metadata.setCatalogName(arg0.getCatalogName(i));
-						metadata.setDisplaySize(arg0.getColumnDisplaySize(i));
-						metadata.setScale(arg0.getScale(i));
-						metadata.setPrecision(arg0.getPrecision(i));
-						metadata.setColumnLabel(arg0.getColumnLabel(i));
-						metadata.setSchemaName( arg0.getSchemaName(i));
-						metadata.setTableName(arg0.getTableName(i));
-						resultSetData.getColumnMetaData().add(metadata);
-					}
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-		};
+		this.resultSetMetaDataListener = new DefaultMetaDataListener(resultSetData);
+	}
+	
+	CustomSelect(String sql, IResultSetMetaDataListener metadatListener){
+		this.sql = sql;
+		this.resultSetMetaDataListener = metadatListener;
 	}
 	
 	
 	@Override
 	protected String getSqlString() {
-		return rtnSqlString(sql);// markedText== null ? sqlText.getText() : markedText;
+		return rtnSqlString(sql); // markedText== null ? sqlText.getText() : markedText;
 	}
 	
 	@Override
@@ -67,5 +77,6 @@ class CustomSelect<T extends IAbstractModel> extends   SelectPagingSqlStatement<
 	public IResultSetData getResultSetData() {
 		return resultSetData;
 	}
+
 	
 }

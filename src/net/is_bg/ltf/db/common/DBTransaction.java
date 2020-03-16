@@ -105,11 +105,30 @@ public class DBTransaction implements IDBTransaction {
 			if(statements != null && statements.length > 0) {
 				causedRollBack = i;
 				LOG.debug(getTrInfoForLog(exceptionToString(e)));
+				
+				//get rollback statement details:
+				message = getRollbackMessage();
 			}
 			// TODO: handle exception
 			throw toJdbcException(e, message);
 		}
 	}
+	
+	
+	
+	private String getRollbackMessage() {
+		DBStatement rollBackStatement = statements[causedRollBack];
+		if(rollBackStatement!=null) {
+		  DBStatementDetails rollbackdetails = 	rollBackStatement.getDetails();
+		  String sql =  rollbackdetails.getSlqForlog();
+		  String clas = rollbackdetails.getStatemetntClass().toString();
+		  return "\nROLLBACK CLASS: \n" + clas + "\nROLLBACK SQL:" + sql;
+		}
+		return null;
+	}
+	
+	
+	
 	
 	public void commit(){
 		try {
@@ -241,6 +260,8 @@ public class DBTransaction implements IDBTransaction {
 			if(exceptionMessage != null){
 				sbclasses.append(DBTransactionMarkConstants.EXCEPTION_BEGIN);
 				sbclasses.append("\n");
+				sbclasses.append(getRollbackMessage());
+				sbclasses.append("\n");
 				sbclasses.append(exceptionMessage);
 				sbclasses.append("\n");
 				sbclasses.append(DBTransactionMarkConstants.EXCEPTION_END);
@@ -353,8 +374,8 @@ public class DBTransaction implements IDBTransaction {
 	}
 	
 	public static JDBCException toJdbcException(Exception ex, String message){
-		String msg = ex.getMessage();
-	    msg = msg == null ? ("\n" + exceptionToString(ex)) : (msg+ "\n" +  exceptionToString(ex));
+		//String msg = ex.getMessage();
+	    message = message == null ? ("\n" + exceptionToString(ex)) : (message+ "\n" +  exceptionToString(ex));
 		JDBCException jdbcex = new JDBCException(message == null ? "" :message, ex);
 		return jdbcex;
 	}
