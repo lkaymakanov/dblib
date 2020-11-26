@@ -210,6 +210,7 @@ public class DBTransaction implements IDBTransaction {
 		for(DBStatement db : statements){
 			DBStatementDetails d = db.getDetails();
 			DBTransactionStatementInfo st = new DBTransactionStatementInfo();
+			d.setStatemetntClass(db.getClass());
 			dbStatementDetails.add(d);
 			st.cl = db.getClass().toString();
 			st.sT = d.startTime;
