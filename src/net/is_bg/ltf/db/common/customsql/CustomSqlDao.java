@@ -32,6 +32,16 @@ public class CustomSqlDao extends AbstractMainDao{
 			protected String getSqlString() {
 				return sqll;
 			}
+
+			@Override
+			public boolean isUpdate() {
+				return true;
+			}
+
+			@Override
+			public boolean isStoredProcedure() {
+				return false;
+			}
 		};
 		execute(update, dataSource);
 		ResultSetData data = new ResultSetData();
@@ -49,6 +59,10 @@ public class CustomSqlDao extends AbstractMainDao{
 		d[0] = update.getUpdateCnt();
 		data.getResult().add(d);
 		return data;
+		
+		
+		
+		
 	}
 	
 	

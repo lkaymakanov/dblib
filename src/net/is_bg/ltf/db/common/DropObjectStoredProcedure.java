@@ -91,5 +91,17 @@ public class DropObjectStoredProcedure extends StoredProcedure{
 		callableStatement.setString(2, type.getType());
 		
 	}
+	
+	@Override
+	public boolean isStoredProcedure() {
+		return false;
+	}
+	
+	@Override
+	public boolean isUpdate() {
+		return true;
+	}
+	
+	
 
 }

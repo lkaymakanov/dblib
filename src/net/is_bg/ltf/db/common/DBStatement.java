@@ -23,4 +23,10 @@ public interface DBStatement {
 	 */
 	public DBStatementDetails getDetails();
 	
+	
+	public boolean isUpdate();
+	
+	
+	public boolean isStoredProcedure();
+	
 }

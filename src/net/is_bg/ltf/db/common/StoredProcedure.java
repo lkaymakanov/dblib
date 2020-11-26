@@ -72,4 +72,14 @@ public abstract class StoredProcedure extends DBStatementAdapter {
 		// no implementation
 	}
 	
+	@Override
+	public boolean isStoredProcedure() {
+		return true;
+	}
+	
+	@Override
+	public boolean isUpdate() {
+		return true;
+	}
+	
 }

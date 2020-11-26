@@ -49,5 +49,17 @@ public class NullSqlStatement extends SqlStatement{
 	protected void setParameters(PreparedStatement prStmt) throws SQLException {
 		// TODO Auto-generated method stub
 	}
+	
+	@Override
+	public boolean isStoredProcedure() {
+		return false;
+	}
+	
+	@Override
+	public boolean isUpdate() {
+		return false;
+	}
+	
+	
 
 }

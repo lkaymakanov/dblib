@@ -104,5 +104,15 @@ public abstract class SqlStatement extends DBStatementAdapter {
 	public void setResultSetConcurrency(int resultSetConcurrency) {
 		this.resultSetConcurrency = resultSetConcurrency;
 	}
+	
+	@Override
+	public boolean isUpdate() {
+		return false;
+	}
+	
+	@Override
+	public boolean isStoredProcedure() {
+		return false;
+	}
 
 }

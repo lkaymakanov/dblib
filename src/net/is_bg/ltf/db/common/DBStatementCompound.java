@@ -47,5 +47,17 @@ public class DBStatementCompound implements DBStatement{
 		}
 		return new DBStatementDetailsCompound(d);
 	}
+	
+	@Override
+	public boolean isStoredProcedure() {
+		return false;
+	}
+	
+	@Override
+	public boolean isUpdate() {
+		return false;
+	}
+	
+	
 
 }

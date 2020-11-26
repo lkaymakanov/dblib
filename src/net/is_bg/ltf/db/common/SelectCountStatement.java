@@ -75,5 +75,18 @@ public class SelectCountStatement extends SelectSqlStatement{
 	public int getRowCount(){
 		return count;
 	}
+	
+	
+	@Override
+	public boolean isStoredProcedure() {
+		return false;
+	}
+	
+	@Override
+	public boolean isUpdate() {
+		return false;
+	}
+	
+	
 
 }

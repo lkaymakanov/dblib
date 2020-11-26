@@ -18,4 +18,14 @@ public abstract class UpdateSqlStatement extends SqlStatement {
 	public int getUpdateCnt() {
 		return updateCnt;
 	}
+	
+	@Override
+	public boolean isUpdate() {
+		return true;
+	}
+	
+	@Override
+	public boolean isStoredProcedure() {
+		return false;
+	}
 }

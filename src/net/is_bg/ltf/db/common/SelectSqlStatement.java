@@ -31,4 +31,14 @@ public abstract class SelectSqlStatement extends SqlStatement {
 	protected void retrieveResult(ResultSet rs) throws SQLException {
 		// no implementation
 	}
+	
+	@Override
+	public boolean isUpdate() {
+		return false;
+	}
+	
+	@Override
+	public boolean isStoredProcedure() {
+		return false;
+	}
 }

@@ -84,16 +84,19 @@ public class DBTransaction implements IDBTransaction {
 			startTime = timer.getStartTime();
 			for (; i < statements.length; i++) {
 				DBStatementDetails d = statements[i].getDetails();
-				statements[i].getDetails().setTransactionIsolationLevel(connection.getTransactionIsolation());
+				DBStatement s = statements[i];
+				d.setTransactionIsolationLevel(connection.getTransactionIsolation());
 				timerDbStatement.start();
 				d.startTime = timerDbStatement.getStartTime();
-				statements[i].execute(connection);
+				s.execute(connection);
 				timerDbStatement.stop();
 				/*if((i+1) % 4 == 0){
 					throw new RuntimeException("deliberate exception"); 
 				}*/
 				d.endTime = timerDbStatement.getEndTime();
 				d.duration = d.endTime - d.startTime;
+				d.setUpdate(s.isUpdate());
+				d.setStoredProcedure(s.isStoredProcedure());
 			}
 			timer.stop();
 			endTime = timer.getEndTime();

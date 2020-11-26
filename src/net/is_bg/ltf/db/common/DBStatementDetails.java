@@ -42,6 +42,10 @@ public  class DBStatementDetails implements Serializable {
 	
 	private Class statemetntClass;
 	
+	private boolean update;
+	
+	private boolean storedProcedure;
+	
 	/** begin, end time of execution and duration. */
 	long startTime,endTime, duration;
 	
@@ -303,6 +307,22 @@ public  class DBStatementDetails implements Serializable {
 
 	public void setStatemetntClass(Class statemetntClass) {
 		this.statemetntClass = statemetntClass;
+	}
+	
+	public boolean isUpdate() {
+		return update;
+	}
+	
+	public void setUpdate(boolean update) {
+		this.update = update;
+	}
+	
+	public boolean isStoredProcedure() {
+		return storedProcedure;
+	}
+	
+	public void setStoredProcedure(boolean storedProcedure) {
+		this.storedProcedure = storedProcedure;
 	}
 	
 }
