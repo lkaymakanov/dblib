@@ -7,7 +7,7 @@
     <sourceDirectory>src</sourceDirectory>
     
     <!--ADD THIS distribution management TO POM to install library  to NEXUS repo -->
- 
+    
     
     <plugins>
       <plugin>
@@ -19,18 +19,23 @@
         </configuration>
       </plugin>
     </plugins>
+    
   </build>
+  
+  
+  
   
    <distributionManagement>
               <repository>
-                     <id>cc-private-repo</id>
+                     <id>CCRepo</id>
                      <name>Release</name>
                      <url>http://10.240.44.149:8081/repository/maven-releases/</url>
               </repository>
               <snapshotRepository>
-                     <id>cc-private-repo</id>
+                     <id>CCRepo</id>
                      <name>Snapshot</name>
                      <url>http://10.240.44.149:8081/repository/maven-snapshots</url>
               </snapshotRepository>
   </distributionManagement>
 </project>
+
