@@ -169,11 +169,11 @@ class ResultSetDataFormatter {
 	
 	private static String asCell(Object o) {
 		if(o == null) o = "";
-		String res = "";
-	    res+=HTML_KEYWORDS.TD.begin();
-		res+=o.toString();
-		res+=HTML_KEYWORDS.TD.end();
-		return res;
+		StringBuilder res = new StringBuilder();
+	    res.append(HTML_KEYWORDS.TD.begin());
+		res.append(o.toString());
+		res.append(HTML_KEYWORDS.TD.end());
+		return res.toString();
 	}
 	
 	
@@ -181,39 +181,41 @@ class ResultSetDataFormatter {
 		HtmlElementPropBuilder b = new HtmlElementPropBuilder();
 		b.setClazz("myclass"); b.setStyle("mystyle");
 		
-		String res = HTML_KEYWORDS.HTML.begin();
+		StringBuilder res = new StringBuilder();
 		
-		res+=HTML_KEYWORDS.HEAD.begin();
-		res+= HTML_KEYWORDS.STYLE.begin();
-		res+=style;
-		res+= HTML_KEYWORDS.STYLE.end();
-		res+= HTML_KEYWORDS.HEAD.end();
+		res.append(HTML_KEYWORDS.HTML.begin());
 		
-		res+=HTML_KEYWORDS.BODY.begin();
+		res.append(HTML_KEYWORDS.HEAD.begin());
+		res.append( HTML_KEYWORDS.STYLE.begin());
+		res.append(style);
+		res.append(HTML_KEYWORDS.STYLE.end());
+		res.append(HTML_KEYWORDS.HEAD.end());
+		
+		res.append(HTML_KEYWORDS.BODY.begin());
 		//tabl s themselves
 		//String res = "";
 		
 		for(IResultSetData data:datal) {
-			res+=HTML_KEYWORDS.TABLE.begin(tableStyle.build());
-			res+=HTML_KEYWORDS.TR.begin(headerStyle.build());
+			res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
+			res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
 			//header
 			for(ColumnMetaData md: data.getColumnMetaData()) {
-				res+=asCell(md.getColumnLabel());
+				res.append(asCell(md.getColumnLabel()));
 			}
-			res+=HTML_KEYWORDS.TR.end();
+			res.append(HTML_KEYWORDS.TR.end());
 			
 			for(Object [] c: data.getResult()) {
-				res+=HTML_KEYWORDS.TR.begin();
+				res.append(HTML_KEYWORDS.TR.begin());
 				for(Object o : c) {
-					res+=asCell(o);
+					res.append(asCell(o));
 				}
-				res+=HTML_KEYWORDS.TR.end();
+				res.append(HTML_KEYWORDS.TR.end());
 			}
-			res+=HTML_KEYWORDS.TABLE.end();
+			res.append(HTML_KEYWORDS.TABLE.end());
 		}
-		res+=HTML_KEYWORDS.BODY.end();
-		res+=HTML_KEYWORDS.HTML.end();
-		return res;
+		res.append(HTML_KEYWORDS.BODY.end());
+		res.append(HTML_KEYWORDS.HTML.end());
+		return res.toString();
 		
 		
 	}
@@ -222,16 +224,17 @@ class ResultSetDataFormatter {
 		HtmlElementPropBuilder b = new HtmlElementPropBuilder();
 		b.setClazz("myclass"); b.setStyle("mystyle");
 		
-		String res = HTML_KEYWORDS.HTML.begin();
+		StringBuilder res = new StringBuilder();
+		res.append(HTML_KEYWORDS.HTML.begin());
 		
-		res+=HTML_KEYWORDS.HEAD.begin();
-		res+= HTML_KEYWORDS.STYLE.begin();
-		res+=style;
-		res+= HTML_KEYWORDS.STYLE.end();
-		res+= HTML_KEYWORDS.HEAD.end();
+		res.append(HTML_KEYWORDS.HEAD.begin());
+		res.append(HTML_KEYWORDS.STYLE.begin());
+		res.append(style);
+		res.append(HTML_KEYWORDS.STYLE.end());
+		res.append(HTML_KEYWORDS.HEAD.end());
 		
-		res+=HTML_KEYWORDS.BODY.begin();
-		//tabl s themselves
+		res.append(HTML_KEYWORDS.BODY.begin());
+		//tables themselves
 		//String res = "";
 		
 		for(ResultSetDataSql datasql:datal) {
@@ -239,39 +242,39 @@ class ResultSetDataFormatter {
 			String sql = datasql.sql;
 			String className = datasql.className;
 			
-			res+="</br>";
-			res+="</br>";
+			res.append("</br>");
+			res.append("</br>");
 			
-			res+=HTML_KEYWORDS.TABLE.begin(tableStyle.build());
-			res+=HTML_KEYWORDS.TR.begin(headerStyle.build());
+			res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
+			res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
 			//header
-			res+=asCell(className);
-			res+=HTML_KEYWORDS.TR.end();
-			res+=HTML_KEYWORDS.TR.begin();
-			res+=asCell(sql);
-			res+=HTML_KEYWORDS.TR.end();
-			res+=HTML_KEYWORDS.TABLE.end();
+			res.append(asCell(className));
+			res.append(HTML_KEYWORDS.TR.end());
+			res.append(HTML_KEYWORDS.TR.begin());
+			res.append(asCell(sql));
+			res.append(HTML_KEYWORDS.TR.end());
+			res.append(HTML_KEYWORDS.TABLE.end());
 			
-			res+=HTML_KEYWORDS.TABLE.begin(tableStyle.build());
-			res+=HTML_KEYWORDS.TR.begin(headerStyle.build());
+			res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
+			res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
 			//header
 			for(ColumnMetaData md: data.getColumnMetaData()) {
-				res+=asCell(md.getColumnLabel());
+				res.append(asCell(md.getColumnLabel()));
 			}
-			res+=HTML_KEYWORDS.TR.end();
+			res.append(HTML_KEYWORDS.TR.end());
 			
 			for(Object [] c: data.getResult()) {
-				res+=HTML_KEYWORDS.TR.begin();
+				res.append(HTML_KEYWORDS.TR.begin());
 				for(Object o : c) {
-					res+=asCell(o);
+					res.append(asCell(o));
 				}
-				res+=HTML_KEYWORDS.TR.end();
+				res.append(HTML_KEYWORDS.TR.end());
 			}
-			res+=HTML_KEYWORDS.TABLE.end();
+			res.append(HTML_KEYWORDS.TABLE.end());
 		}
-		res+=HTML_KEYWORDS.BODY.end();
-		res+=HTML_KEYWORDS.HTML.end();
-		return res;
+		res.append(HTML_KEYWORDS.BODY.end());
+		res.append(HTML_KEYWORDS.HTML.end());
+		return res.toString();
 		
 		
 	}
