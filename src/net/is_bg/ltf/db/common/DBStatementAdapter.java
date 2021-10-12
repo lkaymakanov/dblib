@@ -1,6 +1,7 @@
 package net.is_bg.ltf.db.common;
 import java.sql.ResultSetMetaData;
 
+import net.is_bg.ltf.db.common.customsql.IResultSetData;
 import net.is_bg.ltf.db.common.interfaces.IResultSetMetaDataListener;
 import net.is_bg.ltf.db.common.interfaces.visit.IVisit;
 
@@ -30,7 +31,10 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 	
 	protected IResultSetMetaDataListener resultSetMetaDataListener;
 	
-	//ADD COMMON STUFF TO STORED PROCEDURE CLASSES & SQL STATEMENT CLASSES
+	//private static IStoreResultStrategy  storeResultsetStrategy;
+	
+	protected IResultSetData  storedResultSetData;
+	
 	
 	/**
 	 * Displays resulset metadata.
@@ -136,5 +140,9 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 		this.collectUsrDetails = collectUsrDetails;
 	}	
 	
-	
+	/*
+*/
+	public IResultSetData getStoredResultSetData() {
+		return storedResultSetData;
+	}
 }

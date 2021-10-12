@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dblib</groupId>
   <artifactId>dblib</artifactId>
-  <version>1.2.6020</version>
+  <version>1.2.7020</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     
