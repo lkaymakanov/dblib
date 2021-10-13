@@ -2,7 +2,9 @@ package net.is_bg.ltf.db.common;
 
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.is_bg.ltf.db.common.ResultSetDataFormatter.HtmlElementProp.HtmlElementPropBuilder;
@@ -13,6 +15,8 @@ class ResultSetDataFormatter {
 	
 	private static HtmlElementPropBuilder tableStyle = new HtmlElementPropBuilder();
 	private static HtmlElementPropBuilder headerStyle = new HtmlElementPropBuilder();
+	private static final String df = "dd.MM.yyyy'T'HH:mm:ss.SSSZ";
+	private static final SimpleDateFormat dff = new SimpleDateFormat(df);
 	private static String style = "  body {\n"+
 			" 	background-color:rgb(15, 15, 15);\n"+
 			" 	background-image: url('blood.png');\n"+
@@ -220,7 +224,11 @@ class ResultSetDataFormatter {
 		
 	}
 	
-	static String asHtmlSql(List<ResultSetDataSql> datal) {
+	static String asHtmlSql(List<ResultSetDataSql> datal, long f) {
+		return wrapAsBody(asHtmlTable(datal, f));
+	}
+	
+	static String wrapAsBody(String t) {
 		HtmlElementPropBuilder b = new HtmlElementPropBuilder();
 		b.setClazz("myclass"); b.setStyle("mystyle");
 		
@@ -237,48 +245,76 @@ class ResultSetDataFormatter {
 		//tables themselves
 		//String res = "";
 		
+		res.append(t);
+		
+		res.append(HTML_KEYWORDS.BODY.end());
+		res.append(HTML_KEYWORDS.HTML.end());
+		return res.toString();
+	}
+	
+	static String asHtmlTable(ResultSetDataSql data, long f) {
+		List<ResultSetDataSql> l = new ArrayList<>();
+		l.add(data);
+		return asHtmlTable(l, f);
+		
+	}
+	
+	static String asHtmlTable(List<ResultSetDataSql> datal, long f) {
+		StringBuilder res = new StringBuilder();
 		for(ResultSetDataSql datasql:datal) {
 			IResultSetData data = datasql.resultSetData;
 			String sql = datasql.sql;
 			String className = datasql.className;
 			
-			res.append("</br>");
-			res.append("</br>");
-			
-			res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
-			res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
-			//header
-			res.append(asCell(className));
-			res.append(HTML_KEYWORDS.TR.end());
-			res.append(HTML_KEYWORDS.TR.begin());
-			res.append(asCell(sql));
-			res.append(HTML_KEYWORDS.TR.end());
-			res.append(HTML_KEYWORDS.TABLE.end());
-			
-			res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
-			res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
-			//header
-			for(ColumnMetaData md: data.getColumnMetaData()) {
-				res.append(asCell(md.getColumnLabel()));
-			}
-			res.append(HTML_KEYWORDS.TR.end());
-			
-			for(Object [] c: data.getResult()) {
+			if((f & 1l)!=0) {
+				res.append("</br>");
+				res.append("</br>");
+				
+				res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
+				res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
+				//header
+				res.append(asCell(className + " " + dff.format(new Date( datasql.timeStamp))));
+				res.append(HTML_KEYWORDS.TR.end());
 				res.append(HTML_KEYWORDS.TR.begin());
-				for(Object o : c) {
-					res.append(asCell(o));
+				res.append(asCell(sql ));
+				res.append(HTML_KEYWORDS.TR.end());
+				res.append(HTML_KEYWORDS.TABLE.end());
+				//header
+			}
+			if((f&2)!=0) {
+				res.append("</br>");
+				res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
+				res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
+				
+				for(ColumnMetaData md: data.getColumnMetaData()) {
+					res.append(asCell(md.getColumnLabel()));
 				}
 				res.append(HTML_KEYWORDS.TR.end());
+				
+				for(Object [] c: data.getResult()) {
+					res.append(HTML_KEYWORDS.TR.begin());
+					for(Object o : c) {
+						res.append(asCell(o));
+					}
+					res.append(HTML_KEYWORDS.TR.end());
+				}
+				res.append(HTML_KEYWORDS.TABLE.end());
 			}
-			res.append(HTML_KEYWORDS.TABLE.end());
 		}
-		res.append(HTML_KEYWORDS.BODY.end());
-		res.append(HTML_KEYWORDS.HTML.end());
 		return res.toString();
-		
-		
 	}
 	
+	
+	static String asHtmlSql(List<ResultSetDataSql> datal) {
+		return asHtmlSql(datal, -1);
+	}
+	
+	
+	static String asHtmlSql(ResultSetDataSql datal, long f) {
+		List<ResultSetDataSql> l = new ArrayList<>();
+		l.add(datal);
+		return asHtmlSql(l, -1);
+	}
 	
 	
 	

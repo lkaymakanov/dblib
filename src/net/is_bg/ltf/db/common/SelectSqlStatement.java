@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +21,7 @@ public abstract class SelectSqlStatement extends SqlStatement {
 	 */
 	private IStoreResultStrategy storeResultsetStrategy = null;
 	private static volatile IResultSetStorageProvider stprovider = null;
+	private IResultSetData stored = null;
 	
 	public SelectSqlStatement() {
 		final SelectSqlStatement self = this;
@@ -65,15 +65,15 @@ public abstract class SelectSqlStatement extends SqlStatement {
 				ressql.className = self.getClass().getCanonicalName();
 				ressql.resultSetData = resultSetData;
 				ressql.sql = sql;
-				
-				long now = System.currentTimeMillis();
-				storage.putIfAbsent("raw", new HashMap<Long,ResultSetDataSql>());
+				ressql.timeStamp = System.currentTimeMillis();
+				storage.putIfAbsent("raw", new ArrayList<ResultSetDataSql>());
+				self.stored = ressql;
 				Object raw = storage.get("raw");
 				
-				if(raw instanceof Map) {
-					((Map) raw).put(now, ressql);
+				if(raw instanceof List) {
+					((List) raw).add( ressql);
 				}
-				return resultSetData;
+				return ressql;
 			}
 			
 			private   Object[] processRow(ResultSet rs, List<ColumnMetaData> meta) throws SQLException {
@@ -109,7 +109,7 @@ public abstract class SelectSqlStatement extends SqlStatement {
 		ResultSet rs = prStmt.executeQuery();
 		if(resultSetMetaDataListener!=null) resultSetMetaDataListener.processMetaData(rs.getMetaData());
 		retrieveResult(rs);
-		if(isValidStr()) storedResultSetData = storeResultsetStrategy.getResult(rs, stprovider.getStorage(), stprovider.getStorage() == null? null:sqlForLog()); 
+		if(isValidStr()) storeResultsetStrategy.getResult(rs, stprovider.getStorage(), stprovider.getStorage() == null? null:sqlForLog()); 
 	}
 	
 	/**
@@ -135,6 +135,10 @@ public abstract class SelectSqlStatement extends SqlStatement {
 	
 	public static void setStprovider(IResultSetStorageProvider stprovider) {
 		SelectSqlStatement.stprovider = stprovider;
+	}
+	
+	public IResultSetData getStored() {
+		return stored;
 	}
 }
 
@@ -167,5 +171,6 @@ class ResultSetData implements IResultSetData{
 	public void setException(Exception exception) {
 		this.exception = exception;
 	}
+
 	
 }

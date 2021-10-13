@@ -33,7 +33,6 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 	
 	//private static IStoreResultStrategy  storeResultsetStrategy;
 	
-	protected IResultSetData  storedResultSetData;
 	
 	
 	/**
@@ -142,7 +141,5 @@ public abstract  class  DBStatementAdapter  implements DBStatement{
 	
 	/*
 */
-	public IResultSetData getStoredResultSetData() {
-		return storedResultSetData;
-	}
+	
 }
