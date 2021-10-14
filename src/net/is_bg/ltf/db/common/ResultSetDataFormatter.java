@@ -96,7 +96,14 @@ class ResultSetDataFormatter {
 			"  color:red;\n"+
 			" }\n";
 	
-	
+	private static final String script= "var toggle = function(elId){\r\n" + 
+			"			var el = document.getElementById(elId);  \r\n" + 
+			"			if(el.style.display=='none'){\r\n" + 
+			"				el.style.display='block';\r\n" + 
+			"			}else{\r\n" + 
+			"				el.style.display='none';\r\n" + 
+			"			}\r\n" + 
+			"		}";
 	static {
 		tableStyle.setClazz("register");
 		headerStyle.setClazz("header");
@@ -150,7 +157,8 @@ class ResultSetDataFormatter {
 		 TABLE("table"),
 		 HR("hr"),
 		 TR("tr"),
-		 TD("td");
+		 TD("td"), 
+		 SCRIPT("script");
 		 private String word;
 		 
 		 HTML_KEYWORDS(String key) {
@@ -190,9 +198,12 @@ class ResultSetDataFormatter {
 		res.append(HTML_KEYWORDS.HTML.begin());
 		
 		res.append(HTML_KEYWORDS.HEAD.begin());
-		res.append( HTML_KEYWORDS.STYLE.begin());
+		res.append(HTML_KEYWORDS.STYLE.begin());
 		res.append(style);
 		res.append(HTML_KEYWORDS.STYLE.end());
+		res.append(HTML_KEYWORDS.SCRIPT.begin());
+		res.append(script);
+		res.append(HTML_KEYWORDS.SCRIPT.end());
 		res.append(HTML_KEYWORDS.HEAD.end());
 		
 		res.append(HTML_KEYWORDS.BODY.begin());
@@ -239,8 +250,10 @@ class ResultSetDataFormatter {
 		res.append(HTML_KEYWORDS.STYLE.begin());
 		res.append(style);
 		res.append(HTML_KEYWORDS.STYLE.end());
+		res.append(HTML_KEYWORDS.SCRIPT.begin());
+		res.append(script);
+		res.append(HTML_KEYWORDS.SCRIPT.end());
 		res.append(HTML_KEYWORDS.HEAD.end());
-		
 		res.append(HTML_KEYWORDS.BODY.begin());
 		//tables themselves
 		//String res = "";
@@ -259,6 +272,10 @@ class ResultSetDataFormatter {
 		
 	}
 	
+	private static String createToggleBtn(String id, String content) {
+		return " <span onclick=\"toggle('"+ id+"')\">"+ content+"</span>";
+	}
+	
 	static String asHtmlTable(List<ResultSetDataSql> datal, long f) {
 		StringBuilder res = new StringBuilder();
 		for(ResultSetDataSql datasql:datal) {
@@ -269,11 +286,10 @@ class ResultSetDataFormatter {
 			if((f & 1l)!=0) {
 				res.append("</br>");
 				res.append("</br>");
-				
 				res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
 				res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
 				//header
-				res.append(asCell(className + " " + dff.format(new Date( datasql.timeStamp))));
+				res.append(asCell(className + " " + dff.format(new Date( datasql.timeStamp)) + "  type =  " + datasql.type));
 				res.append(HTML_KEYWORDS.TR.end());
 				res.append(HTML_KEYWORDS.TR.begin());
 				res.append(asCell(sql ));
@@ -281,6 +297,20 @@ class ResultSetDataFormatter {
 				res.append(HTML_KEYWORDS.TABLE.end());
 				//header
 			}
+			
+			if((f & 4)!= 0) {
+				res.append("</br>");
+				res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
+				res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
+				String id = "stack_"+ datasql.timeStamp;
+				res.append(asCell(createToggleBtn(id,"Stack: >>")));
+				res.append(HTML_KEYWORDS.TR.end());
+				res.append(HTML_KEYWORDS.TR.begin());
+				res.append(asCell("<span id=\"" + id+"\" style=\"display:none;\">" +  datasql.stack + "</span>"));
+				res.append(HTML_KEYWORDS.TR.end());
+				res.append(HTML_KEYWORDS.TABLE.end());
+			}
+			
 			if((f&2)!=0) {
 				res.append("</br>");
 				res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));

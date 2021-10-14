@@ -31,6 +31,7 @@ public abstract class StoredProcedure extends DBStatementAdapter {
 			setParameters(callableStatement);
 			callableStatement.executeUpdate();
 			retrieveResult(callableStatement);
+			if(isValidStr()) storeResultsetStrategy.getResult(null, stprovider.getStorage(), stprovider.getStorage() == null? null:sqlForLog()); 
 		} catch (SQLException e) {
 			throw new JDBCException(e);
 		} finally {

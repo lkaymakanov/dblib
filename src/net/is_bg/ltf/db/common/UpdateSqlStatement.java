@@ -13,6 +13,7 @@ public abstract class UpdateSqlStatement extends SqlStatement {
 	@Override
 	protected final void executeStatement(PreparedStatement prStmt) throws SQLException {
 	   updateCnt =  prStmt.executeUpdate();
+	   if(isValidStr()) storeResultsetStrategy.getResult(null, stprovider.getStorage(), stprovider.getStorage() == null? null:sqlForLog()); 
 	}
 
 	public int getUpdateCnt() {

@@ -10,6 +10,8 @@ class ResultSetDataSql implements IResultSetData {
 	String sql;
 	String className;
 	long timeStamp;
+	int type;
+	String stack;
 	
 	@Override
 	public List<ColumnMetaData> getColumnMetaData() {
@@ -23,4 +25,5 @@ class ResultSetDataSql implements IResultSetData {
 	public Exception getException() {
 		return resultSetData == null ? null : resultSetData.getException();
 	}
+	
 }
