@@ -30,13 +30,20 @@ public class ConnectionWrapper implements Connection{
 	private List<ReporstSqlSatement> prepStatments = new ArrayList<ReporstSqlSatement>();
 	private DBStatement [] statements; 
 	private IDBTransaction transaction;
+	private IResultSetStorageProvider provider;
 	
-	public static Connection wrap(Connection con){
-		return  new ConnectionWrapper(con);
+	public static Connection wrap(Connection con, IResultSetStorageProvider pr){
+		return  new ConnectionWrapper(con, pr);
 	}
 	
-	private ConnectionWrapper(Connection con){
+	public static Connection wrap(Connection con){
+		return  wrap(con, DBStatementAdapter.stprovider);
+	}
+	
+	private ConnectionWrapper(Connection con, IResultSetStorageProvider pr){
 		this.wrappedConnecion = con;
+		this.provider = pr;
+		
 	}
 
 	@Override
@@ -57,7 +64,7 @@ public class ConnectionWrapper implements Connection{
 	@Override
 	public PreparedStatement prepareStatement(String sql) throws SQLException {
 		BindVariablePreparedStatementEx st = new BindVariablePreparedStatementEx(wrappedConnecion.prepareStatement(sql), sql);
-		prepStatments.add(new ReporstSqlSatement(st));
+		prepStatments.add(new ReporstSqlSatement(st ,provider));
 		return st;
 	}
 
@@ -321,10 +328,12 @@ public class ConnectionWrapper implements Connection{
 	}
 	
 	
-	private static class ReporstSqlSatement extends NullSqlStatement{
+	static class ReporstSqlSatement extends NullSqlStatement{
 		BindVariablePreparedStatementEx pstEx;
-		ReporstSqlSatement(BindVariablePreparedStatementEx pstEx){
+		IResultSetStorageProvider provider;
+		ReporstSqlSatement(BindVariablePreparedStatementEx pstEx, IResultSetStorageProvider provider){
 			this.pstEx = pstEx;
+			this.provider = provider;
 		}
 		
 		@Override
@@ -336,6 +345,7 @@ public class ConnectionWrapper implements Connection{
 		public void execute(Connection connection) {
 			super.execute(connection);
 			getDetails().setSlqForlog(pstEx.getSqlForLog());
+			if(isValidStr()) new CommonStoreStrategy(this, provider).getResult(null, provider == null ? null : provider.getStorage(), getSqlString());
 		}
 		
 	}

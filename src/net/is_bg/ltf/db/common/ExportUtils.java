@@ -42,7 +42,7 @@ public class ExportUtils {
 		return tobefiltered.stream().filter(new Predicate<ResultSetDataSql>() {
 			@Override
 			public boolean test(ResultSetDataSql t) {
-				return ((t.type& f)!=0);
+				return ((t.type & f)!=0);
 			}
 		}).collect(Collectors.toList());
 	}

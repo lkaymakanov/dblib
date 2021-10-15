@@ -283,7 +283,7 @@ class ResultSetDataFormatter {
 			String sql = datasql.sql;
 			String className = datasql.className;
 			
-			if((f & 1l)!=0) {
+			if((f&1l)!=0) {
 				res.append("</br>");
 				res.append("</br>");
 				res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
@@ -298,7 +298,7 @@ class ResultSetDataFormatter {
 				//header
 			}
 			
-			if((f & 4)!= 0) {
+			if((f&4)!= 0) {
 				res.append("</br>");
 				res.append(HTML_KEYWORDS.TABLE.begin(tableStyle.build()));
 				res.append(HTML_KEYWORDS.TR.begin(headerStyle.build()));
