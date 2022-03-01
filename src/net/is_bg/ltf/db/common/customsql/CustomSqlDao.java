@@ -59,10 +59,6 @@ public class CustomSqlDao extends AbstractMainDao{
 		d[0] = update.getUpdateCnt();
 		data.getResult().add(d);
 		return data;
-		
-		
-		
-		
 	}
 	
 	

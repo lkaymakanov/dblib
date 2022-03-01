@@ -12,6 +12,8 @@ public class ColumnMetaData {
 	private int displaySize;
 	private int scale;
 	private String schemaName;
+	private String columnTypeName;
+	
 	
 	public String getColumnName() {
 		return columnName;
@@ -83,4 +85,12 @@ public class ColumnMetaData {
 	public String toString() {
 		return catalogName + "." + tableName + "." + columnName +", " + columnType + ", " + precision;
 	}
+	
+	public void setColumnTypeName(String columnTypeName) {
+		this.columnTypeName = columnTypeName;
+	}
+	public String getColumnTypeName() {
+		return columnTypeName;
+	}
 }
+

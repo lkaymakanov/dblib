@@ -401,7 +401,7 @@ public class BindVariableData {
 		for(BindVariableInfo var:values.values()){
 			if(var.getValue()!=null){
 				if(var.IsOutputParam() == true) callStmt.registerOutParameter(var.getPosition(), var.getType());
-				else callStmt.setObject(var.getPosition(), var.getValue());
+				else callStmt.setObject(var.getPosition(), var.getValue(), var.getType());
 			}else{
 				callStmt.setNull(var.getPosition(), var.getType());
 			}

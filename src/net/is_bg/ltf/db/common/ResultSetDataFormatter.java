@@ -266,7 +266,7 @@ class ResultSetDataFormatter {
 	}
 	
 	static String asHtmlTable(ResultSetDataSql data, long f) {
-		List<ResultSetDataSql> l = new ArrayList<>();
+		List<ResultSetDataSql> l = new ArrayList<ResultSetDataSql>();
 		l.add(data);
 		return asHtmlTable(l, f);
 		
@@ -341,7 +341,7 @@ class ResultSetDataFormatter {
 	
 	
 	static String asHtmlSql(ResultSetDataSql datal, long f) {
-		List<ResultSetDataSql> l = new ArrayList<>();
+		List<ResultSetDataSql> l = new ArrayList<ResultSetDataSql>();
 		l.add(datal);
 		return asHtmlSql(l, -1);
 	}
