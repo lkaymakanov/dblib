@@ -6,7 +6,6 @@ public interface IConnectionOperation {
     
 	public int    getConnectionHandle();
 	public int    getConnectionHandle(String dsName);
-	//public int    getConnectionHandle(long munix);
 	public void   setAutoCommit(String dsName,  int handle, boolean autoCommit);
 	public IResultSetData exeSelect(ISqlQueryData data);
 	public IResultSetData exeUpdate(ISqlQueryData data);

@@ -152,7 +152,7 @@ class CustomResultSet implements ResultSet{
 	public Date getDate(int columnIndex) throws SQLException {
 		long l = getLong(columnIndex);
 		try {
-			return l == 0 ? null : SqlTypeConverter.longToDate(l);
+			return l == 0 ? null : SqlTypeConverter.toDate(l);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -161,7 +161,7 @@ class CustomResultSet implements ResultSet{
 	@Override
 	public Time getTime(int columnIndex) throws SQLException {
 		long l = getLong(columnIndex);
-		return l == 0 ? null : SqlTypeConverter.longToTime(l);
+		return l == 0 ? null : SqlTypeConverter.toTime(l);
 	}
 
 	@Override
@@ -199,92 +199,77 @@ class CustomResultSet implements ResultSet{
 
 	@Override
 	public byte getByte(String columnLabel) throws SQLException {
-		
 		return getByte(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public short getShort(String columnLabel) throws SQLException {
-		
 		return getShort(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public int getInt(String columnLabel) throws SQLException {
-		
 		return getInt(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public long getLong(String columnLabel) throws SQLException {
-		
 		return getLong(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public float getFloat(String columnLabel) throws SQLException {
-		
 		return getFloat(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public double getDouble(String columnLabel) throws SQLException {
-		
 		return getDouble(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public BigDecimal getBigDecimal(String columnLabel, int scale)
 			throws SQLException {
-		
 		return getBigDecimal(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public byte[] getBytes(String columnLabel) throws SQLException {
-		
 		return getBytes(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public Date getDate(String columnLabel) throws SQLException {
-		
 		return getDate(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public Time getTime(String columnLabel) throws SQLException {
-		
 		return getTime(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public Timestamp getTimestamp(String columnLabel) throws SQLException {
-		
 		return getTimestamp(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public InputStream getAsciiStream(String columnLabel) throws SQLException {
-		
 		return getAsciiStream(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public InputStream getUnicodeStream(String columnLabel) throws SQLException {
-		
 		return getUnicodeStream(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public InputStream getBinaryStream(String columnLabel) throws SQLException {
-		
 		return getBinaryStream(getIndexByColumnLabel(columnLabel));
 	}
 
 	@Override
 	public SQLWarning getWarnings() throws SQLException {
-		
 		return null;
 	}
 
@@ -296,7 +281,6 @@ class CustomResultSet implements ResultSet{
 
 	@Override
 	public String getCursorName() throws SQLException {
-		
 		return null;
 	}
 

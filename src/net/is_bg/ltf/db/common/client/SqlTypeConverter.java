@@ -34,11 +34,11 @@ public class SqlTypeConverter {
 		return Types.JAVA_OBJECT;
 	}
 	
-	static Time longToTime(long l){
+	static Time toTime(long l){
 		return new java.sql.Time(l);
 	}
 	
-	static Date longToDate(long l){
+	static Date toDate(long l){
 		return new java.sql.Date(l);
 	}
 	

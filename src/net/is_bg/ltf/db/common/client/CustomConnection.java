@@ -34,8 +34,8 @@ class CustomConnection implements Connection{
 	CustomConnection(ICustomDSProperties prop){
 	   this.customDsProp = prop;
 	   this.conop = prop.getConop();
-	   this.dsName = customDsProp.getMunicipalityId() + "";
-	   this.handle = customDsProp.getConop().getConnectionHandle(prop.getMunicipalityId()+"");
+	   this.dsName = customDsProp.getDsName();
+	   this.handle = customDsProp.getConop().getConnectionHandle(dsName);
 	}
 	
 

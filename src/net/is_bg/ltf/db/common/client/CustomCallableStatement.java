@@ -1,5 +1,6 @@
 package net.is_bg.ltf.db.common.client;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -188,12 +189,12 @@ class CustomCallableStatement extends CustomPreparedStatement implements Callabl
 
 	@Override
 	public Reader getNCharacterStream(int parameterIndex) throws SQLException {
-		return   null;//customRes.getString(parameterIndex);
+		return  getReader(customRes.getString(parameterIndex));
 	}
 
 	@Override
 	public Reader getNCharacterStream(String parameterName) throws SQLException {
-		return null;
+		return  getReader(customRes.getString(parameterName));
 	}
 
 	@Override
@@ -204,6 +205,27 @@ class CustomCallableStatement extends CustomPreparedStatement implements Callabl
 	@Override
 	public NClob getNClob(String parameterName) throws SQLException {
 		return null;
+	}
+	
+	private static Reader getReader(String s) {
+		char [] c = s.toCharArray();
+		Reader r=	new Reader() {
+			@Override
+			public int read(char[] cbuf, int off, int len) throws IOException {
+				if(off + len  > c.length) return -1;
+				int i=0;
+				while(i < len) {
+				   cbuf[i++] = 	c[off++];
+				}
+				return len;
+			}
+			
+			@Override
+			public void close() throws IOException {
+				
+			}
+		};
+		return r;
 	}
 
 	@Override
@@ -236,11 +258,13 @@ class CustomCallableStatement extends CustomPreparedStatement implements Callabl
 		return customRes.getObject(parameterName);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException {
 		return (T)customRes.getObject(parameterIndex);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getObject(String parameterName, Class<T> type) throws SQLException {
 		return (T)customRes.getObject(parameterName);

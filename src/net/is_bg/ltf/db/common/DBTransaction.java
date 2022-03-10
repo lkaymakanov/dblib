@@ -85,7 +85,7 @@ public class DBTransaction implements IDBTransaction {
 			for (; i < statements.length; i++) {
 				DBStatementDetails d = statements[i].getDetails();
 				DBStatement s = statements[i];
-				d.setTransactionIsolationLevel(connection.getTransactionIsolation());
+				//d.setTransactionIsolationLevel(connection.getTransactionIsolation());
 				timerDbStatement.start();
 				d.startTime = timerDbStatement.getStartTime();
 				s.execute(connection);
