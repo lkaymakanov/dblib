@@ -48,7 +48,7 @@ public class CustomClientUtils {
 			
 			@Override
 			public long getMunicipalityId() {
-				return Long.valueOf(getProp("municipalityid"));
+				return Long.valueOf(getProp("municipalityId"));
 			}
 			
 			@Override
@@ -83,7 +83,53 @@ public class CustomClientUtils {
 			
 			@Override
 			public IConnectionOperation getConop() {
-				return null;
+				return new IConnectionOperation() {
+					
+					@Override
+					public void setAutoCommit(String dsName, int handle, boolean autoCommit) {
+						
+					}
+					
+					@Override
+					public void rollBack(String dsName, int handle) {
+						
+					}
+					
+					@Override
+					public int getConnectionHandle(String dsName) {
+						return 0;
+					}
+					
+					@Override
+					public int getConnectionHandle() {
+						return 0;
+					}
+					
+					@Override
+					public IResultSetData exeUpdate(ISqlQueryData data) {
+						return null;
+					}
+					
+					@Override
+					public IResultSetData exeStoredProc(ISqlQueryData data) {
+						return null;
+					}
+					
+					@Override
+					public IResultSetData exeSelect(ISqlQueryData data) {
+						return null;
+					}
+					
+					@Override
+					public void commit(String dsName, int handle) {
+						
+					}
+					
+					@Override
+					public void close(String dsName, int handle) {
+						
+					}
+				} ;
 			}
 		};
 	}
