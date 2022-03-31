@@ -208,7 +208,7 @@ class CustomCallableStatement extends CustomPreparedStatement implements Callabl
 	}
 	
 	private static Reader getReader(String s) {
-		char [] c = s.toCharArray();
+		final char [] c = s.toCharArray();
 		Reader r=	new Reader() {
 			@Override
 			public int read(char[] cbuf, int off, int len) throws IOException {

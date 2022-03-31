@@ -8,11 +8,14 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.is_bg.ltf.db.common.DBConfig;
+import net.is_bg.ltf.db.common.DBExecutor;
 import net.is_bg.ltf.db.common.SelectSqlStatement;
 import net.is_bg.ltf.db.common.StoredProcedure;
 import net.is_bg.ltf.db.common.UpdateSqlStatement;
 import net.is_bg.ltf.db.common.client.ICustomParam;
 import net.is_bg.ltf.db.common.client.IParamsSqlAdditionalData;
+import net.is_bg.ltf.db.common.interfaces.IConnectionFactory;
 
 public class CustomSqlUtils {
 	
@@ -118,23 +121,27 @@ public class CustomSqlUtils {
 		if(upd instanceof UpdateSqlStatementEx) {
 			UpdateSqlStatementEx u = (UpdateSqlStatementEx)upd;
 			u.execute(c);
-			ResultSetData data = new ResultSetData();
-			ColumnMetaData meta = new ColumnMetaData();
-			meta.setColumnName("count");
-			meta.setCatalogName("");
-			meta.setColumnClassName("");
-			meta.setColumnType(Types.BIGINT);
-			meta.setDisplaySize(100);
-			meta.setScale(0);
-			meta.setSchemaName("");
-			meta.setTableName("count");
-			data.getColumnMetaData().add(meta);
-			Object [] d = new Object [1];
-			d[0] = u.getUpdateCnt();
-			data.getResult().add(d);
-			return data;
+			return getUpdateResult(u);
 		}
 		return null;
+	}
+	
+	private static IResultSetData getUpdateResult(UpdateSqlStatement u){
+		ResultSetData data = new ResultSetData();
+		ColumnMetaData meta = new ColumnMetaData();
+		meta.setColumnName("count");
+		meta.setCatalogName("");
+		meta.setColumnClassName("");
+		meta.setColumnType(Types.BIGINT);
+		meta.setDisplaySize(100);
+		meta.setScale(0);
+		meta.setSchemaName("");
+		meta.setTableName("count");
+		data.getColumnMetaData().add(meta);
+		Object [] d = new Object [1];
+		d[0] = u.getUpdateCnt();
+		data.getResult().add(d);
+		return data;
 	}
 
 	
@@ -150,5 +157,45 @@ public class CustomSqlUtils {
 			return cs.getResultSetData();
 		}
 		return null;
+	}
+
+	
+	private static CustomSelect toSelect(String sql) {
+		return new CustomSelect<>(sql);
+	}
+	
+	private static UpdateSqlStatementEx toUpdate(String sql) {
+		UpdateSqlStatementEx upd = new UpdateSqlStatementEx();
+		upd.sql = sql;
+		return upd;
+	}
+
+	
+	private static class DbExec extends DBExecutor{
+		public DbExec(IConnectionFactory factory, boolean stlt) {
+			super(factory);
+			this.stealth = stlt;
+		}
+	}
+	
+	
+	public static IResultSetData executeCustomSelect(CustomSqlConfigParams cp) {
+		CustomSelect s = toSelect(cp.getSql());
+		s.setRows(cp.getRowBegin(), cp.getRowEnd());
+		new DbExec(DBConfig.getConnectionFactory(), cp.isStealth()).execute(s,cp.getDataSource(), Connection.TRANSACTION_READ_COMMITTED);
+		return s.getResultSetData();
+	}
+
+
+	public static IResultSetData execSql(CustomSqlConfigParams cp) {
+		String sql = cp.getSql();
+		return sql.trim().toLowerCase().startsWith("select") ? executeCustomSelect(cp):exeUpd(cp);
+	}
+
+
+	public static IResultSetData exeUpd(CustomSqlConfigParams cp) {
+		UpdateSqlStatementEx s = toUpdate(cp.getSql());
+		new DbExec(DBConfig.getConnectionFactory(), cp.isStealth()).execute(s, cp.getDataSource(), Connection.TRANSACTION_READ_COMMITTED);
+	    return getUpdateResult(s);
 	}
 }

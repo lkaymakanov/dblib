@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
-import net.is_bg.ltf.db.common.interfaces.logging.ILog;
 
 
 
@@ -21,8 +20,6 @@ public abstract class SqlStatement extends DBStatementAdapter {
 	/** The Constant ddMMyyyyFormat. */
 	public static final DateFormat ddMMyyyyFormat = new SimpleDateFormat("dd.MM.yyyy");
 	
-	/** The Constant LOG. */
-	protected static final ILog LOG = DBConfig.getDbLogFactory().getLog(SqlStatement.class);
 	
 	/** The result set type. */
 	protected int resultSetType = ResultSet.TYPE_FORWARD_ONLY;
@@ -56,7 +53,7 @@ public abstract class SqlStatement extends DBStatementAdapter {
 				//get user details
 				collectUserDetails();
 			} catch (SQLException e) {
-				LOG.error(e);
+				DBConfig.getDbLogFactory().getLog(SqlStatement.class).error(e);
 			}
 		}
 	}

@@ -27,7 +27,7 @@ public class CustomClientUtils {
 		}
 	};
 	
-	public static ICustomDSProperties fromProperties(Properties  p) {
+	public static ICustomDSProperties fromProperties(final Properties  p) {
 		if(p == null) return null;
 		
 		return new ICustomDSProperties() {

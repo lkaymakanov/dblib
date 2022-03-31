@@ -73,7 +73,7 @@ class DatasourceWrapper implements DataSource {
 		return c;
 	}
 	
-	private static void addCallBacks(ConnectionWrapperP c ) {
+	private static void addCallBacks(final ConnectionWrapperP c ) {
 		Function<Connection, Void> f = new Function<Connection, Void>() {
 				@Override
 				public Void apply(Connection t) {
