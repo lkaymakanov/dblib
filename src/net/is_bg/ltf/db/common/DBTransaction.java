@@ -230,11 +230,11 @@ public class DBTransaction implements IDBTransaction {
 	}
 	
 	private String getTrInfoForLog(String exceptionMessage){
-		return getTrInfoForLog(exceptionMessage , false);
+		return (getTrInfoForLog(exceptionMessage , false));
 	}
 	
 	private String getTrInfoForLog(String exceptionMessage,  boolean json){
-		return getTrInfoForLog( exceptionMessage,  statements,  json);
+		return  (getTrInfoForLog( exceptionMessage,  statements,  json));
 	}
 	
 	
@@ -309,7 +309,7 @@ public class DBTransaction implements IDBTransaction {
 				e.printStackTrace();
 			}
 		}
-		return s;
+		return DBConfig.getEncrypter()!=null ?DBConfig.getEncrypter().encrypt(s) : s;
 	}
 	
 
