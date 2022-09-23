@@ -6,6 +6,12 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 
+/***
+ * Used to convert sql paramater to a String
+ * Used in converting prepared statement paramaters to their String representation....
+ * @author lkaymakanov
+ *
+ */
 public class SqlTypeConverter {
 
 	public static String toString(Object o) {

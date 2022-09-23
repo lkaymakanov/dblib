@@ -20,13 +20,19 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
-
+/***
+ * <pre>
+ * Aimed at wrapping remote connection and performing before functions....
+ *    beforeCommit
+ *    beforeRollback
+ *    beforeClose
+ *    <pre>
+ * @author lkaymakanov
+ *
+ */
 class ConnectionWrapperP implements Connection{
 	private Connection wrappedConnecion;
-	//private List<ReporstSqlSatement> prepStatments = new ArrayList<ReporstSqlSatement>();
-	//private DBStatement [] statements; 
-	//private IDBTransaction transaction;
-	//private IResultSetStorageProvider provider;
+	
 	
 	Function<Connection, Void> beforeCommit;
 	Function<Connection, Void> beforeClose;

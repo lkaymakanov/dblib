@@ -4,6 +4,9 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+/**Defines parameter to be passed as serialiazed string (JSON or any other form)
+
+ */
 public interface ICustomParam {
 
 	public int getSqlType();

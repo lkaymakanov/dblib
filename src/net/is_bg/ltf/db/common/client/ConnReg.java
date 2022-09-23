@@ -6,13 +6,13 @@ import java.util.Map;
 
 class ConnReg  implements IConnectionRegister{
 	
-	private Map<Integer, ConData> conMap = new HashMap<Integer, ConData >();
+	private Map<Integer, ConData> conMap = new HashMap<Integer, ConData>();
     private static Map<String, IConnectionRegister> reg = new HashMap<String, IConnectionRegister>();
     private static final String defaultKey  = "b789b962-7ec2-4ffc-b37c-115be4e6f587";
     private String registerKey;
     
     private static void log(ConData d, String action ) {
-    	System.out.println("Connection " + d.c + ", hash " + d.c.hashCode() + "  " +  action +   " at "  + System.currentTimeMillis() + "  registry " +  d.regKey + " by thread  " + Thread.currentThread());
+    	System.out.println("Connection " + d.c +   ", hash " + d.c.hashCode() + "  " +  action +   " at "  + System.currentTimeMillis() + "  registry " +  d.regKey + " by thread  " + Thread.currentThread());
     }
     
     ConnReg(){
@@ -22,6 +22,9 @@ class ConnReg  implements IConnectionRegister{
     	}
     }
     
+    /**
+     * Registers a connection in connection register only if connection is not registered....
+     */
 	@Override
 	public void add(Connection c) {
 		synchronized (conMap) {
@@ -34,6 +37,9 @@ class ConnReg  implements IConnectionRegister{
 		}
 	}
 
+	/**
+	 * Retrieves a connection from connection register...
+	 */
 	@Override
 	public Connection get(int hashcode) {
 		synchronized (conMap) {
@@ -46,6 +52,9 @@ class ConnReg  implements IConnectionRegister{
 		}
 	}
 
+	/***
+	 * Removes connection from register by connection reference...
+	 */
 	@Override
 	public void release(Connection c) {
 		synchronized (conMap) {
@@ -53,6 +62,11 @@ class ConnReg  implements IConnectionRegister{
 		}
 	}
 
+	
+
+	/**
+	 * Removes a connection registers by hashCode.
+	 */
 	@Override
 	public void release(int hashCode) {
 		synchronized (conMap) {
@@ -63,7 +77,9 @@ class ConnReg  implements IConnectionRegister{
 		}
 	}
 	
-	
+	/**
+	 * Removes all connection registers.
+	 */
 	@Override
 	public void release() {
 		synchronized (conMap) {
@@ -73,6 +89,9 @@ class ConnReg  implements IConnectionRegister{
 		}
 	}
 	
+	/***
+	 * Retrieves connection register by datasource name..
+	 */
 	@Override
 	public IConnectionRegister getConnectionRegister(String dsName) {
 		IConnectionRegister r;
@@ -83,6 +102,9 @@ class ConnReg  implements IConnectionRegister{
 		return r;
 	}
 
+	/***
+	 * Adds a new connection register associated with datasource name!!!
+	 */
 	@Override
 	public void addConnectionRegister(String dsName) {
 		synchronized (this) {
@@ -93,7 +115,15 @@ class ConnReg  implements IConnectionRegister{
 	}
 }
 
-
+/**
+ * <pre>
+ * Additional connection data associated wih the connection like:
+ * 
+ * handle, creation time, registry key and the connection itself...
+ * <pre>
+ * @author lkaymakanov
+ *
+ */
 class ConData{
 	int handle;
 	Connection c;

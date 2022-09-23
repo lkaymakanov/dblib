@@ -9,6 +9,20 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
+/***
+ * This wrapper is aimed at wrapping remote server datasource & remote connection, so as remote
+ * connection to be registered in register, deregistered
+ * And the callbacks 
+ *    beforeClose
+ *    beforeRollback
+ *    beforeCommit
+ * be executed on the remote connection......
+ * 
+ * This wrapping is to be performed on the server remote connection...
+ *  
+ * @author lkaymakanov
+ *
+ */
 class DatasourceWrapper implements DataSource {
 	private DataSource ds;
 	private static volatile IConnectionRegister reg = new ConnReg();

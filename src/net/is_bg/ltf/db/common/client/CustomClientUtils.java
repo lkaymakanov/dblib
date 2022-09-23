@@ -129,6 +129,8 @@ public class CustomClientUtils {
 					public void close(String dsName, int handle) {
 						
 					}
+					
+					public java.sql.DatabaseMetaData getDataBaseMetaData(String dsName, int handle) {return null;};
 				} ;
 			}
 		};

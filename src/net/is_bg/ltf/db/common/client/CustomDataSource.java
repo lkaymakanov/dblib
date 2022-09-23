@@ -8,7 +8,16 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-
+/**
+ * <pre>
+ * This CustomDataSource is aimed at creating a dataSource to connect to remote server. 
+ * Client connecting to a Remote server should create this custom data source based on custom ds properties such 
+ * as end point, keys, municipality etc.... 
+ * Used to create a Custom Connection!!!
+ * <pre>
+ * @author lkaymakanov
+ *
+ */
 class CustomDataSource implements DataSource {
 	private ICustomDSProperties prop;
 

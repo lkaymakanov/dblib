@@ -39,7 +39,6 @@ class CustomResultSet implements ResultSet{
 	private boolean hasData = false;
 	private Map<String, Integer> colNameIndex = new  HashMap<String, Integer>();
 	private MYMetadata metaData;
-	//private List<String> colLabels;
 	
 	CustomResultSet(IResultSetData resultSetData){
 		this.resultSetData = resultSetData;

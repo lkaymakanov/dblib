@@ -142,7 +142,7 @@ class CustomConnection implements Connection{
 
 	@Override
 	public DatabaseMetaData getMetaData() throws SQLException {
-		return null;
+		return conop.getDataBaseMetaData(dsName, handle);
 	}
 
 	@Override
