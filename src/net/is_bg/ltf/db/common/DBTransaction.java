@@ -113,7 +113,7 @@ public class DBTransaction implements IDBTransaction {
 				message = getRollbackMessage();
 			}
 			// TODO: handle exception
-			throw toJdbcException(e, message);
+			handleException(stealth, e, message);
 		}
 	}
 	
@@ -140,8 +140,7 @@ public class DBTransaction implements IDBTransaction {
 			if(listener!=null)listener.afterCommit(this);
 			if(visit != null) visit.setCommittedTransactionCnt(visit.getCommittedTransactionCnt() + 1);
 		} catch (SQLException e) {
-			e.printStackTrace();
-			throw toJdbcException(e, null);
+			handleException(stealth, e, null);
 		}
 	}
 	
@@ -157,8 +156,14 @@ public class DBTransaction implements IDBTransaction {
 			if(listener!=null)listener.afterRollBack(this);
 			rollBacked = true;
 		} catch (SQLException e) {
+			handleException(stealth, e, null);
+		}
+	}
+	
+	private static void handleException(boolean stealth, Exception e, String msg) {
+		if(!stealth) {
 			e.printStackTrace();
-			throw toJdbcException(e, null);
+			throw toJdbcException(e, msg);
 		}
 	}
 	
@@ -167,8 +172,7 @@ public class DBTransaction implements IDBTransaction {
 		try {
 			//connection.setTransactionIsolation(isolationLevel);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw toJdbcException(e, null);
+			handleException(stealth, e, null);
 		}
 	}
 	
@@ -176,8 +180,7 @@ public class DBTransaction implements IDBTransaction {
 		try {
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
-			e.printStackTrace();
-			throw  toJdbcException(e, null);
+			handleException(stealth, e, null);
 		}
 	}
 	
@@ -185,7 +188,7 @@ public class DBTransaction implements IDBTransaction {
 		try {
 			if(!connection.isClosed()) connection.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			if(!stealth)e.printStackTrace();
 		}
 	}
 
@@ -301,13 +304,13 @@ public class DBTransaction implements IDBTransaction {
 			s = sbclasses.toString();
 			//s = sbclasses.append(String.format(DBTransactionMarkConstatns.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())).toString()).toString();
 		}else{
-			try {
+			/*try {
 				//s = om.writeValueAsString(trInfo);
 				//s = String.format(DBTransactionMarkConstants.MAGICST_TRANS_BEG_STARTTIME, new Date(timer.getStartTime())) + s + String.format(DBTransactionMarkConstants.TRANSACTION_END_ENDTIME, new Date(timer.getStartTime())).toString();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				//e.printStackTrace();
+			}*/
 		}
 		return DBConfig.getEncrypter()!=null ?DBConfig.getEncrypter().encrypt(s) : s;
 	}
